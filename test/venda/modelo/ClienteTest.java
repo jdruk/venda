@@ -6,9 +6,7 @@
 package venda.modelo;
 
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -18,19 +16,14 @@ import static org.junit.Assert.*;
  */
 public class ClienteTest {
     
+    private Cliente instance;
+    
     public ClienteTest() {
-    }
-    
-    @BeforeClass
-    public static void setUpClass() {
-    }
-    
-    @AfterClass
-    public static void tearDownClass() {
     }
     
     @Before
     public void setUp() {
+        instance = new Cliente();
     }
     
     @After
@@ -43,7 +36,6 @@ public class ClienteTest {
     @Test
     public void testGetEndereco() {
         System.out.println("getEndereco");
-        Cliente instance = new Cliente();
         Endereco expResult = null;
         Endereco result = instance.getEndereco();
         assertEquals(expResult, result);
@@ -74,8 +66,6 @@ public class ClienteTest {
         boolean expResult = false;
         boolean result = instance.isPlanoDeFidelidade();
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        //fail("The test case is a prototype.");
     }
 
     /**
@@ -85,10 +75,7 @@ public class ClienteTest {
     public void testSetPlanoDeFidelidade() {
         System.out.println("setPlanoDeFidelidade");
         boolean planoDeFidelidade = false;
-        Cliente instance = new Cliente();
         instance.setPlanoDeFidelidade(planoDeFidelidade);
-        // TODO review the generated test code and remove the default call to fail.
-       // fail("The test case is a prototype.");
     }
     
 }
