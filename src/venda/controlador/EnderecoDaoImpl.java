@@ -1,5 +1,6 @@
 package venda.controlador;
 
+import com.sun.jdi.connect.Connector;
 import java.sql.Connection;
 import java.sql.*;
 import java.util.logging.Level;
@@ -43,9 +44,12 @@ public class EnderecoDaoImpl implements EnderecoDao {
 
     @Override
     public void atualizar(Endereco endereco) {
+        if (endereco == null){
+            throw new IllegalArgumentException("Endereco não pode ser null");
+        }
         try {
             Connection conexao = FabricaConexao.conectar();
-            PreparedStatement stmt = conexao.prepareStatement("update endereco set rua = ?, bairro = ?, estado = ? where codigo = ?;");
+            PreparedStatement stmt = conexao.prepareStatement("update endereco set rua = ?, bairro = ?, estado = ? where codigo = ?");
             stmt.setString(1, endereco.getRua());
             stmt.setString(2, endereco.getBairro());
             stmt.setString(3, endereco.getEstado());

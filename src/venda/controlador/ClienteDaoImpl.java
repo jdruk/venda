@@ -67,6 +67,7 @@ public class ClienteDaoImpl implements ClienteDao {
             stmt.setString(2, cliente.getRg());
             stmt.setBoolean(3, cliente.isPlanoDeFidelidade());
             stmt.setInt(4, cliente.getCodigo());
+            stmt.execute();
             FabricaConexao.fecharConexao();
         } catch (SQLException ex) {
             Logger.getLogger(ClienteDaoImpl.class.getName()).log(Level.SEVERE, null, ex);

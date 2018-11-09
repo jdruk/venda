@@ -70,7 +70,7 @@ public class ClienteDaoImplTest {
      */
     @Test
     public void testAtualizar() {
-        System.out.println("atualizar");
+        System.out.println("atualizar cliente");
         cliente.setCodigo(1);
         cliente.setNome("novo nome");
         ClienteDao instance = new ClienteDaoImpl();
@@ -87,7 +87,7 @@ public class ClienteDaoImplTest {
         int codigo = 1;
         ClienteDao instance = new ClienteDaoImpl();
         Cliente result = instance.buscar(codigo);
-        assertEquals("josafa", result.getNome());
+        assertEquals("novo nome", result.getNome());
         assertEquals("rua", result.getEndereco().getRua());
     }
 

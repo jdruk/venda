@@ -6,10 +6,23 @@ create table cliente(
 )
 
 create table endereco(
-    codigo integer IDENTITY primary key,
+    codigo integer identity primary key,
     rua varchar(20),
     bairro varchar(20),
     estado varchar(2),
     cliente_id integer,
     foreign key (cliente_id) references cliente(codigo)
+)
+
+create table produto(
+    codigo integer identity primary key,
+    nome varchar(200),
+    valor decimal(30,10)
+)
+
+create table estoque(
+    codigo integer identity primary key,
+    produto_id integer,
+    quantidade integer default 0,
+    foreign key (produto_id) references produto(codigo)
 )
