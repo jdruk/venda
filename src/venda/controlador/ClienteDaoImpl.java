@@ -61,7 +61,6 @@ public class ClienteDaoImpl implements ClienteDao {
     public void atualizar(Cliente cliente) {
         try {
             Connection conexao = FabricaConexao.conectar();
-<<<<<<< HEAD
             String query = "update cliente set nome = ? , rg = ? , planodefidelidade =? where codigo = ? ";
             PreparedStatement stmt = conexao.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
             stmt.setString(1, cliente.getNome());
@@ -69,14 +68,6 @@ public class ClienteDaoImpl implements ClienteDao {
             stmt.setBoolean(3, cliente.isPlanoDeFidelidade());
             stmt.setInt(4, cliente.getCodigo());
             stmt.execute();
-=======
-            String query = "update cliente nome = ? , rg = ? , planodefidelidade =? where codigo = ? ";
-            PreparedStatement stmt = conexao.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-            stmt.setString(1, cliente.getNome());
-            stmt.setString(2, cliente.getRg());
-            stmt.setBoolean(3, cliente.isPlanoDeFidelidade());
-            stmt.setInt(4, cliente.getCodigo());
->>>>>>> origin/master
             FabricaConexao.fecharConexao();
         } catch (SQLException ex) {
             Logger.getLogger(ClienteDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
@@ -92,11 +83,7 @@ public class ClienteDaoImpl implements ClienteDao {
             PreparedStatement stmt = conexao.prepareStatement(query);
             stmt.setInt(1, codigo);
             ResultSet rs = stmt.executeQuery();
-<<<<<<< HEAD
             if (rs.next()) {
-=======
-            if (rs.first()) {
->>>>>>> origin/master
                 cliente = carregarCliente(rs);
             }
             return cliente;
@@ -108,7 +95,6 @@ public class ClienteDaoImpl implements ClienteDao {
 
     @Override
     public ArrayList<Cliente> todas() {
-<<<<<<< HEAD
         ArrayList<Cliente> clientes = null;
         try {
             Connection conexao = FabricaConexao.conectar();
@@ -116,14 +102,6 @@ public class ClienteDaoImpl implements ClienteDao {
             PreparedStatement stmt = conexao.prepareStatement(query);
             ResultSet rs = stmt.executeQuery();
             clientes = new ArrayList<>();
-=======
-        ArrayList<Cliente> clientes = new ArrayList<>();
-        try {
-            Connection conexao = FabricaConexao.conectar();
-            String query = "select * from cliente ";
-            PreparedStatement stmt = conexao.prepareStatement(query);
-            ResultSet rs = stmt.executeQuery();
->>>>>>> origin/master
             while(rs.next()){
                 clientes.add(carregarCliente(rs));
             }

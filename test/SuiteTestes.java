@@ -10,14 +10,16 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
-import venda.modelo.ClienteTest;
+import venda.modelo.*;
+import venda.controlador.*;
 
 /**
  *
  * @author josafams
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ClienteTest.class})
+@Suite.SuiteClasses({ClienteDaoImplTest.class, ProdutoDaoImplTest.class,
+    EnderecoDaoImplTest.class, EstoqueDaoImplTest.class})
 public class SuiteTestes {
 
     @BeforeClass

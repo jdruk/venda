@@ -1,17 +1,17 @@
 package venda.controlador;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.List;
 import venda.modelo.Produto;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import venda.modelo.Estoque;
 import venda.utilitario.FabricaConexao;
 
-public class ProdutoDaoImpl implements ProdutoDao{
-    
+public class ProdutoDaoImpl implements ProdutoDao {
+
     private int ultimoCodeGerado(int linhasAfetadas, PreparedStatement stmt) throws SQLException {
         if (linhasAfetadas == 0) {
             throw new SQLException("não conseguiu inserir");
@@ -25,6 +25,14 @@ public class ProdutoDaoImpl implements ProdutoDao{
         return -1;
     }
 
+    private void criarEstoqueParaProduto(Produto produto) {
+        Estoque estoque = new Estoque();
+        estoque.setProduto(produto);
+        estoque.setQuantidade(0);
+        EstoqueDao estoqueDao = new EstoqueDaoImpl();
+        estoqueDao.criar(estoque);
+    }
+
     @Override
     public void criar(Produto produto) {
         try {
@@ -35,6 +43,8 @@ public class ProdutoDaoImpl implements ProdutoDao{
             Integer codigo = ultimoCodeGerado(stmt.executeUpdate(), stmt);
             produto.setCodigo(codigo);
             FabricaConexao.fecharConexao();
+            criarEstoqueParaProduto(produto);
+
         } catch (SQLException ex) {
             Logger.getLogger(ProdutoDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -42,10 +52,13 @@ public class ProdutoDaoImpl implements ProdutoDao{
 
     @Override
     public void deletar(Produto produto) {
-        if(produto == null || produto.getCodigo() == null){
+        if (produto == null || produto.getCodigo() == null) {
             throw new IllegalArgumentException("Produto ou código nulo");
         }
         try {
+            EstoqueDao estoqueDao = new EstoqueDaoImpl();
+            Estoque estoque = estoqueDao.buscar(produto);
+            estoqueDao.deletar(estoque);
             Connection conexao = FabricaConexao.conectar();
             PreparedStatement stmt = conexao.prepareStatement("delete from produto  where codigo = ?");
             stmt.setInt(1, produto.getCodigo());
@@ -79,25 +92,25 @@ public class ProdutoDaoImpl implements ProdutoDao{
             PreparedStatement stmt = conexao.prepareStatement("select * from produto where codigo = ?");
             stmt.setInt(1, codigo);
             ResultSet rs = stmt.executeQuery();
-            if(rs.next()){
+            if (rs.next()) {
                 produto = carregarProduto(rs);
             }
             FabricaConexao.fecharConexao();
         } catch (SQLException ex) {
             Logger.getLogger(ProdutoDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         return produto;
     }
-    
-    private Produto carregarProduto(ResultSet rs){
+
+    private Produto carregarProduto(ResultSet rs) {
         Produto produto = null;
         try {
             produto = new Produto();
             produto.setCodigo(Integer.parseInt(rs.getString("codigo")));
             produto.setNome(rs.getString("nome"));
             produto.setValor(new BigDecimal(rs.getString("valor")));
-            
+
         } catch (SQLException ex) {
             Logger.getLogger(ProdutoDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -108,18 +121,27 @@ public class ProdutoDaoImpl implements ProdutoDao{
     public List<Produto> todos() {
         ArrayList<Produto> produtos = new ArrayList<>();
         try {
-            Connection conexao = FabricaConexao.conectar();
-            PreparedStatement stmt = conexao.prepareStatement("select * from produto");
-            ResultSet rs = stmt.executeQuery();
-            while(rs.next()){
+            ResultSet rs = todosProdutos();
+            while (rs.next()) {
                 produtos.add(carregarProduto(rs));
             }
-            FabricaConexao.fecharConexao();
         } catch (SQLException ex) {
             Logger.getLogger(ProdutoDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
         return produtos;
     }
-    
+
+    private ResultSet todosProdutos() {
+        try {
+            Connection conexao = FabricaConexao.conectar();
+            PreparedStatement stmt = conexao.prepareStatement("select * from produto");
+            ResultSet rs = stmt.executeQuery();
+            FabricaConexao.fecharConexao();
+            return rs;
+        } catch (SQLException ex) {
+            Logger.getLogger(ProdutoDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
 }

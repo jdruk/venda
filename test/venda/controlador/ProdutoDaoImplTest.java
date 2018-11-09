@@ -37,17 +37,16 @@ public class ProdutoDaoImplTest {
         Integer codigo = null;
         ProdutoDaoImpl instance = new ProdutoDaoImpl();
         Produto expResult = null;
-        Produto result = instance.buscar(7);
+        Produto result = instance.buscar(31);
         assertNotNull(result);
-        assertEquals(new Integer(7), result.getCodigo());
+        assertEquals(new Integer(31), result.getCodigo());
     }
 
     @Test
     public void testAtualizar() {
         System.out.println("atualizar produto");
         instance = new ProdutoDaoImpl();
-        Produto p = instance.buscar(7);
-        System.out.println(p);
+        Produto p = instance.buscar(31);
         p.setNome("alterado");
         instance.atualizar(p);
     }
@@ -56,18 +55,18 @@ public class ProdutoDaoImplTest {
     public void testDeletar() {
         System.out.println("deletar produto");
         Produto p = new Produto();
-        p.setCodigo(6);
+        p.setCodigo(30);
         ProdutoDao instance = new ProdutoDaoImpl();
         instance.deletar(p);
     }
 
     @Test
     public void testTodos() {
-        System.out.println("todos");
+        System.out.println("todos produtos");
         ProdutoDaoImpl instance = new ProdutoDaoImpl();
         List<Produto> expResult = null;
         List<Produto> result = instance.todos();
-        assertEquals(expResult, result);
+        assertFalse( result.isEmpty());
     }
 
 }
