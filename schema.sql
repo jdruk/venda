@@ -6,6 +6,7 @@ create table cliente(
 )
 
 create table endereco(
+<<<<<<< HEAD
     codigo integer identity primary key,
     rua varchar(20),
     bairro varchar(20),
@@ -25,4 +26,12 @@ create table estoque(
     produto_id integer,
     quantidade integer default 0,
     foreign key (produto_id) references produto(codigo)
+=======
+    codigo integer IDENTITY primary key,
+    rua varchar(20),
+    bairro varchar(20),
+    estado varchar(2),
+    cliente_id integer,
+    foreign key (cliente_id) references cliente(codigo)
+>>>>>>> origin/master
 )
