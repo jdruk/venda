@@ -42,6 +42,7 @@ create table itemvenda(
     produto_id integer not null,
     venda_id integer not null,
     valor decimal(30,10) not null,
+    quantidade integer default 0,
     foreign key (produto_id) references produto(codigo) on delete cascade,
     foreign key (venda_id) references venda(codigo) on delete cascade
 )

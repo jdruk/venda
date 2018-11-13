@@ -2,6 +2,7 @@ package venda.controlador;
 
 import java.util.List;
 import venda.modelo.ItemVenda;
+import venda.modelo.Venda;
 
 public interface ItemVendaDao {
     
@@ -13,6 +14,6 @@ public interface ItemVendaDao {
 
     ItemVenda buscar(int codigo);
 
-    List<ItemVenda> todos();
+    List<ItemVenda> todos(Venda venda);
     
 }
