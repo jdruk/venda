@@ -30,10 +30,11 @@ create table estoque(
 create table venda(
     codigo integer identity primary key,
     cliente_id integer not null,
-    data_venda datetime not null,
-    total decimal(30,10) default 0.0,
+    data_venda timestamp not null,
+    tipo integer not null,
+    desconto decimal(30,10) default 0,
     status integer default 0,
-    foreign key (cliente_id) references cliente(codigo)
+    foreign key (cliente_id) references cliente(codigo) on delete cascade
 )
 
 create table itemvenda(
@@ -41,6 +42,6 @@ create table itemvenda(
     produto_id integer not null,
     venda_id integer not null,
     valor decimal(30,10) not null,
-    foreign key (produto_id) references produto(codigo),
-    foreign key (venda_id) references venda(codigo)
+    foreign key (produto_id) references produto(codigo) on delete cascade,
+    foreign key (venda_id) references venda(codigo) on delete cascade
 )

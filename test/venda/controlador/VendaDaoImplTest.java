@@ -1,66 +1,74 @@
 package venda.controlador;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import venda.modelo.Cliente;
 import venda.modelo.Venda;
 
 public class VendaDaoImplTest {
+    
+    private Venda venda;
+    private VendaDaoImpl instance;
+    private ClienteDao clienteDao;
+    private ProdutoDao produtoDao;
     
     public VendaDaoImplTest() {
     }
     
     @Before
     public void setUp() {
+        venda = new Venda();
+        clienteDao = new ClienteDaoImpl();
+        instance = new VendaDaoImpl();
+        produtoDao = new ProdutoDaoImpl();
     }
 
     @Test
     public void testCriar() {
-        System.out.println("criar");
-        Venda venda = null;
-        VendaDaoImpl instance = new VendaDaoImpl();
+        System.out.println("criar venda");
+        Cliente cliente = clienteDao.todas().get(0);
+        assertNotNull(cliente);
+        venda.setCliente(cliente);
+        venda.setData(new Date());
+        venda.setStatus(Venda.Status.ABERTO.toInt());
+        venda.setTipo(0);
+        venda.setPagamento(new ArrayList<>());
+        venda.setItensVenda(new ArrayList<>());
         instance.criar(venda);
-        fail("The test case is a prototype.");
     }
 
     @Test
     public void testDeletar() {
-        System.out.println("deletar");
-        Venda venda = null;
-        VendaDaoImpl instance = new VendaDaoImpl();
-        instance.deletar(venda);
-        fail("The test case is a prototype.");
+        System.out.println("deletar venda");
+        instance.deletar(instance.todas().get(0));
     }
-
+    
     @Test
     public void testAtualizar() {
-        System.out.println("atualizar");
-        Venda venda = null;
-        VendaDaoImpl instance = new VendaDaoImpl();
+        System.out.println("atualizar venda");
+        venda.setTipo(1);
+        assertFalse(clienteDao.todas().isEmpty());
+        Cliente cliente = clienteDao.todas().get(0);
+        venda.setCliente(cliente);
         instance.atualizar(venda);
-        fail("The test case is a prototype.");
     }
 
     @Test
     public void testBuscar() {
-        System.out.println("buscar");
-        int codigo = 0;
-        VendaDaoImpl instance = new VendaDaoImpl();
-        Venda expResult = null;
-        Venda result = instance.buscar(codigo);
-        assertEquals(expResult, result);
-        fail("The test case is a prototype.");
+        System.out.println("buscar venda");
+        venda = instance.buscar(8);
+        assertNotNull(venda);
     }
-
+    
     @Test
     public void testTodas() {
-        System.out.println("todas");
-        VendaDaoImpl instance = new VendaDaoImpl();
-        ArrayList<Venda> expResult = null;
-        ArrayList<Venda> result = instance.todas();
-        assertEquals(expResult, result);
-        fail("The test case is a prototype.");
+        System.out.println("todas vendas");
+        List<Venda> vendas = instance.todas();
+        assertFalse(vendas.isEmpty());
     }
     
 }
