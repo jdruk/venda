@@ -16,7 +16,6 @@ public class ProdutoDaoImpl implements ProdutoDao {
         if (linhasAfetadas == 0) {
             throw new SQLException("não conseguiu inserir");
         }
-
         try ( ResultSet generatedKeys = stmt.getGeneratedKeys()) {
             if (generatedKeys.next()) {
                 return generatedKeys.getInt(1);
@@ -25,16 +24,12 @@ public class ProdutoDaoImpl implements ProdutoDao {
         return -1;
     }
 
-    private void criarEstoqueParaProduto(Produto produto) {
-        Estoque estoque = new Estoque();
-        estoque.setProduto(produto);
-        estoque.setQuantidade(0);
-        EstoqueDao estoqueDao = new EstoqueDaoImpl();
-        estoqueDao.criar(estoque);
-    }
-
     @Override
     public void criar(Produto produto) {
+        inserir(produto);
+    }
+
+    private Produto inserir(Produto produto){
         try {
             Connection conexao = FabricaConexao.conectar();
             PreparedStatement stmt = conexao.prepareStatement("insert into produto(codigo, nome, valor) values (null,?,?)", Statement.RETURN_GENERATED_KEYS);
@@ -43,13 +38,13 @@ public class ProdutoDaoImpl implements ProdutoDao {
             Integer codigo = ultimoCodeGerado(stmt.executeUpdate(), stmt);
             produto.setCodigo(codigo);
             FabricaConexao.fecharConexao();
-            criarEstoqueParaProduto(produto);
-
         } catch (SQLException ex) {
             Logger.getLogger(ProdutoDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
+        return produto;
     }
-
+    
+    
     @Override
     public void deletar(Produto produto) {
         if (produto == null || produto.getCodigo() == null) {
@@ -142,6 +137,19 @@ public class ProdutoDaoImpl implements ProdutoDao {
             Logger.getLogger(ProdutoDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
+    }
+
+    @Override
+    public void criar(Estoque estoque) {
+        Produto produto = inserir(estoque.getProduto());
+        estoque.setProduto(produto);
+        new EstoqueDaoImpl().criar(estoque);
+    }
+
+    @Override
+    public void atualizar(Estoque estoque) {
+        this.atualizar(estoque.getProduto());
+        new EstoqueDaoImpl().atualizar(estoque);
     }
 
 }

@@ -6,8 +6,6 @@ import java.util.List;
 import venda.modelo.ItemVenda;
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
 import venda.modelo.Venda;
 import venda.utilitario.FabricaConexao;
 

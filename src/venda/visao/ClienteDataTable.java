@@ -1,4 +1,3 @@
-
 package venda.visao;
 
 import java.util.ArrayList;
@@ -9,17 +8,18 @@ import venda.modelo.Cliente;
 
 public class ClienteDataTable extends AbstractTableModel {
 
-    private ClienteDao clienteDao = new ClienteDaoImpl();
-    private ArrayList<venda.modelo.Cliente> clientes =  clienteDao.todas();
-    private String[] colunas = {"Nome", "Endereço"};
-    
-    public String getColumnName(int coluna){
+    private final ClienteDao clienteDao = new ClienteDaoImpl();
+    private ArrayList<venda.modelo.Cliente> clientes = clienteDao.todas();
+    private final String[] colunas = {"Nome", "Endereço"};
+
+    @Override
+    public String getColumnName(int coluna) {
         return colunas[coluna];
     }
-    
+
     @Override
     public int getRowCount() {
-       return clientes.size();
+        return clientes.size();
     }
 
     @Override
@@ -29,29 +29,28 @@ public class ClienteDataTable extends AbstractTableModel {
 
     @Override
     public Object getValueAt(int linha, int coluna) {
-        switch(coluna){
-           case 0:
-               return clientes.get(linha).getNome();
+        switch (coluna) {
+            case 0:
+                return clientes.get(linha).getNome();
             case 1:
-               return clientes.get(linha).getEndereco();
+                return clientes.get(linha).getEndereco();
         }
         return null;
     }
 
-    
-    public void adicionarLinha(){
-        clientes =  clienteDao.todas();
+    public void adicionarLinha() {
+        clientes = clienteDao.todas();
         this.fireTableDataChanged();
     }
-    
+
     public void excluirLinha(int selectedRow) {
         clienteDao.deletar(clientes.get(selectedRow));
         this.clientes.remove(selectedRow);
         this.fireTableRowsDeleted(selectedRow, selectedRow);
     }
-    
-    public Cliente pegarCliente(int linha){
+
+    public Cliente pegarCliente(int linha) {
         return clientes.get(linha);
     }
-    
+
 }

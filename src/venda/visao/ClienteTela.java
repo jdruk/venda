@@ -1,6 +1,5 @@
 package venda.visao;
 
-import javax.swing.JOptionPane;
 import venda.controlador.ClienteDaoImpl;
 import venda.controlador.ClienteDao;
 

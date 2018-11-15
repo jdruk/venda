@@ -5,7 +5,6 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import org.junit.Ignore;
 import venda.modelo.Produto;
 
 public class ProdutoDaoImplTest {

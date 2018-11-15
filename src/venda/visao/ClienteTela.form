@@ -7,7 +7,6 @@
     <Property name="iconifiable" type="boolean" value="true"/>
     <Property name="title" type="java.lang.String" value="Cliente"/>
     <Property name="toolTipText" type="java.lang.String" value="altera&#xe7;&#xf5;es de cliente"/>
-    <Property name="icon" type="boolean" value="true"/>
   </Properties>
   <SyntheticProperties>
     <SyntheticProperty name="formSizePolicy" type="int" value="1"/>

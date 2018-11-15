@@ -4,17 +4,23 @@ import javax.swing.JInternalFrame;
 
 public class Principal extends javax.swing.JFrame {
 
+    private final JInternalFrame clientePrincipal;
+    private final JInternalFrame produtoPrincipal;
+    
     public Principal() {
         initComponents();
-        principalCliente = new ClienteTelaPrincipal();
-        jDesktopPane1.add(principalCliente);
+        clientePrincipal = new ClienteTelaPrincipal();
+        produtoPrincipal = new ProdutoPrincipal();
+        jdPainel.add(clientePrincipal);
+        jdPainel.add(produtoPrincipal);
+        
     }
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jDesktopPane1 = new javax.swing.JDesktopPane();
+        jdPainel = new javax.swing.JDesktopPane();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
@@ -29,7 +35,17 @@ public class Principal extends javax.swing.JFrame {
         });
         jMenuBar1.add(jMenu1);
 
-        jMenu2.setText("Edit");
+        jMenu2.setText("Produto");
+        jMenu2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jMenu2MouseClicked(evt);
+            }
+        });
+        jMenu2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenu2ActionPerformed(evt);
+            }
+        });
         jMenuBar1.add(jMenu2);
 
         setJMenuBar(jMenuBar1);
@@ -38,11 +54,11 @@ public class Principal extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jDesktopPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 800, Short.MAX_VALUE)
+            .addComponent(jdPainel, javax.swing.GroupLayout.DEFAULT_SIZE, 800, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jDesktopPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 577, Short.MAX_VALUE)
+            .addComponent(jdPainel, javax.swing.GroupLayout.DEFAULT_SIZE, 577, Short.MAX_VALUE)
         );
 
         pack();
@@ -50,8 +66,16 @@ public class Principal extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jMenu1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu1MouseClicked
-        principalCliente.setVisible(true);
+        clientePrincipal.setVisible(true);
     }//GEN-LAST:event_jMenu1MouseClicked
+
+    private void jMenu2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenu2ActionPerformed
+       // produtoPrincipal.setVisible(true);
+    }//GEN-LAST:event_jMenu2ActionPerformed
+
+    private void jMenu2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu2MouseClicked
+        produtoPrincipal.setVisible(true);
+    }//GEN-LAST:event_jMenu2MouseClicked
 
     public static void main(String args[]) {
         try {
@@ -77,11 +101,11 @@ public class Principal extends javax.swing.JFrame {
         });
     }
 
-    private final JInternalFrame principalCliente;
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JDesktopPane jDesktopPane1;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JDesktopPane jdPainel;
     // End of variables declaration//GEN-END:variables
 }

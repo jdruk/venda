@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package venda.controlador;
 
 import java.util.ArrayList;
@@ -14,17 +9,13 @@ import org.junit.Ignore;
 import venda.modelo.Cliente;
 import venda.modelo.Endereco;
 
-/**
- *
- * @author josafams
- */
 public class ClienteDaoImplTest {
-    
+
     private Cliente cliente;
-    
+
     public ClienteDaoImplTest() {
     }
-      
+
     @Before
     public void setUp() {
         cliente = new Cliente();
@@ -36,7 +27,7 @@ public class ClienteDaoImplTest {
         cliente.getEndereco().setBairro("BAIRRO");
         cliente.getEndereco().setEstado("CE");
     }
-    
+
     @After
     public void tearDown() {
     }
@@ -46,7 +37,7 @@ public class ClienteDaoImplTest {
      */
     @Test
     public void testCriar() {
-        System.out.println("criar cliente");   
+        System.out.println("criar cliente");
         ClienteDaoImpl instance = new ClienteDaoImpl();
         instance.criar(cliente);
     }
@@ -62,7 +53,7 @@ public class ClienteDaoImplTest {
         cliente.setCodigo(0);
         ClienteDao instance = new ClienteDaoImpl();
         instance.deletar(cliente);
-       
+
     }
 
     /**
@@ -80,7 +71,6 @@ public class ClienteDaoImplTest {
     /**
      * Test of buscar method, of class ClienteDaoImpl.
      */
-    
     @Test
     public void testBuscar() {
         System.out.println("buscar cliente");
@@ -101,5 +91,5 @@ public class ClienteDaoImplTest {
         ArrayList<Cliente> result = instance.todas();
         assertFalse("Dever ter itens na lista", result.isEmpty());
     }
-    
+
 }

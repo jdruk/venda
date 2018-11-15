@@ -8,6 +8,4 @@ import venda.controlador.*;
     ItemVendaDaoImplTest.class})
 
 public class SuiteTestes {
-
-    
 }

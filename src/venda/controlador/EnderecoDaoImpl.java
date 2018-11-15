@@ -1,6 +1,5 @@
 package venda.controlador;
 
-import com.sun.jdi.connect.Connector;
 import java.sql.Connection;
 import java.sql.*;
 import java.util.logging.Level;

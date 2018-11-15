@@ -7,13 +7,12 @@ import venda.modelo.Endereco;
 public class ClienteTelaPrincipal extends javax.swing.JInternalFrame {
 
     private final ClienteDataTable clienteDataTable = new ClienteDataTable();
+    private final venda.controlador.ClienteDao clienteDao = new ClienteDaoImpl();
 
     public ClienteTelaPrincipal() {
         initComponents();
         jtClientes.setModel(clienteDataTable);
     }
-
-    private final venda.controlador.ClienteDao clienteDao = new ClienteDaoImpl();
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -126,7 +125,7 @@ public class ClienteTelaPrincipal extends javax.swing.JInternalFrame {
         ClienteTela telaNova = new ClienteTela(cliente, clienteDataTable);
         this.getDesktopPane().add(telaNova);
         telaNova.setVisible(true);
-        
+
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton3MouseClicked

@@ -48,12 +48,12 @@ public class ClienteDaoImpl implements ClienteDao {
         try {
             EnderecoDao enderecoDao = new EnderecoDaoImpl();
             enderecoDao.deletar(cliente.getEndereco());
-            
+
             Connection conexao = FabricaConexao.conectar();
             String query = "delete from cliente where codigo = ? ";
             PreparedStatement stmt = conexao.prepareStatement(query);
             stmt.setInt(1, cliente.getCodigo());
-            
+
             stmt.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(ClienteDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
@@ -106,14 +106,14 @@ public class ClienteDaoImpl implements ClienteDao {
             PreparedStatement stmt = conexao.prepareStatement(query);
             ResultSet rs = stmt.executeQuery();
             clientes = new ArrayList<>();
-            while(rs.next()){
+            while (rs.next()) {
                 clientes.add(carregarCliente(rs));
             }
             return clientes;
         } catch (SQLException ex) {
             Logger.getLogger(ClienteDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         return clientes;
     }
 
@@ -131,7 +131,7 @@ public class ClienteDaoImpl implements ClienteDao {
         } catch (SQLException ex) {
             Logger.getLogger(ClienteDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         return cliente;
     }
 
