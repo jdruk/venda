@@ -44,7 +44,7 @@ public class EnderecoDaoImpl implements EnderecoDao {
 
     @Override
     public void atualizar(Endereco endereco) {
-        if (endereco == null){
+        if (null == endereco || endereco.getCodigo() == 0){
             throw new IllegalArgumentException("Endereco não pode ser null");
         }
         try {

@@ -1,19 +1,40 @@
 package venda.modelo;
 
-import java.util.List;
+import java.math.BigDecimal;
+import java.util.Date;
 
 public class Pagamento {
-    private int tipo;
+    
     private int codigo;
+    private BigDecimal valor;
     private Venda venda;
-    private List<Parcela> parcelas;
+    private Date dataPagamento;
+    private boolean pago;
 
-    public int getTipo() {
-        return tipo;
+    public boolean isPago() {
+        return pago;
     }
 
-    public void setTipo(int tipo) {
-        this.tipo = tipo;
+    public void setPago(boolean pago) {
+        this.pago = pago;
+    }
+
+    public Date getDataPagamento() {
+        return dataPagamento;
+    }
+
+    public void setDataPagamento(Date dataPagamento) {
+        this.dataPagamento = dataPagamento;
+    }
+    
+    
+
+    public BigDecimal getValor() {
+        return valor;
+    }
+
+    public void setValor(BigDecimal valor) {
+        this.valor = valor;
     }
 
     public int getCodigo() {
@@ -31,14 +52,5 @@ public class Pagamento {
     public void setVenda(Venda venda) {
         this.venda = venda;
     }
-
-    public List<Parcela> getParcelas() {
-        return parcelas;
-    }
-
-    public void setParcelas(List<Parcela> parcelas) {
-        this.parcelas = parcelas;
-    }
-    
-    
+     
 }

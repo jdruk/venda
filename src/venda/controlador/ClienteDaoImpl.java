@@ -13,7 +13,6 @@ public class ClienteDaoImpl implements ClienteDao {
         if (linhasAfetadas == 0) {
             throw new SQLException("não conseguiu inserir");
         }
-
         try ( ResultSet generatedKeys = stmt.getGeneratedKeys()) {
             if (generatedKeys.next()) {
                 return generatedKeys.getInt(1);
@@ -47,10 +46,14 @@ public class ClienteDaoImpl implements ClienteDao {
     @Override
     public void deletar(Cliente cliente) {
         try {
+            EnderecoDao enderecoDao = new EnderecoDaoImpl();
+            enderecoDao.deletar(cliente.getEndereco());
+            
             Connection conexao = FabricaConexao.conectar();
             String query = "delete from cliente where codigo = ? ";
             PreparedStatement stmt = conexao.prepareStatement(query);
             stmt.setInt(1, cliente.getCodigo());
+            
             stmt.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(ClienteDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
@@ -69,6 +72,7 @@ public class ClienteDaoImpl implements ClienteDao {
             stmt.setInt(4, cliente.getCodigo());
             stmt.execute();
             FabricaConexao.fecharConexao();
+            new EnderecoDaoImpl().atualizar(cliente.getEndereco());
         } catch (SQLException ex) {
             Logger.getLogger(ClienteDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -123,7 +127,6 @@ public class ClienteDaoImpl implements ClienteDao {
             cliente.setRg(rs.getString("rg"));
             EnderecoDao enderecoDao = new EnderecoDaoImpl();
             cliente.setEndereco(enderecoDao.buscar(cliente));
-            
             return cliente;
         } catch (SQLException ex) {
             Logger.getLogger(ClienteDaoImpl.class.getName()).log(Level.SEVERE, null, ex);

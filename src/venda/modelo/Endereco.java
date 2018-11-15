@@ -58,4 +58,8 @@ public class Endereco {
         this.estado = estado;
     }
 
+    @Override
+    public String toString(){
+        return this.rua + ", " + this.bairro + " - " + this.estado ;
+    }
 }

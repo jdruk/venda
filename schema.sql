@@ -11,7 +11,7 @@ create table endereco(
     bairro varchar(20),
     estado varchar(2),
     cliente_id integer,
-    foreign key (cliente_id) references cliente(codigo)
+    foreign key (cliente_id) references cliente(codigo) on delete cascade
 )
 
 create table produto(
@@ -44,5 +44,14 @@ create table itemvenda(
     valor decimal(30,10) not null,
     quantidade integer default 0,
     foreign key (produto_id) references produto(codigo) on delete cascade,
+    foreign key (venda_id) references venda(codigo) on delete cascade
+)
+
+create table pagamento(
+    codigo integer identity primary key,
+    valor decimal(30,10) not null,
+    venda_id integer not null,
+    data_pagamento timestamp not null,
+    pago boolean default false,
     foreign key (venda_id) references venda(codigo) on delete cascade
 )
