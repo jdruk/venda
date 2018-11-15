@@ -88,18 +88,7 @@ public class EstoqueDaoImpl implements EstoqueDao{
 
     @Override
     public List<Estoque> todos() {
-        ArrayList<Estoque> estoques = new ArrayList<>();
-        try {
-            Connection conexao = FabricaConexao.conectar();
-            PreparedStatement stmt = conexao.prepareStatement("select * from estoque ");
-            ResultSet rs = stmt.executeQuery();
-            FabricaConexao.fecharConexao();
-            while(rs.next())
-                estoques.add(carregarEstoque(rs));
-        } catch (SQLException ex) {
-            Logger.getLogger(EstoqueDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return estoques;  
+        return obterEstoque("select * from estoque ");
     }
 
     private Estoque carregarEstoque(ResultSet rs) {
@@ -112,6 +101,26 @@ public class EstoqueDaoImpl implements EstoqueDao{
             Logger.getLogger(EstoqueDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
         return estoque;
+    }
+
+    @Override
+    public List<Estoque> disponiveis() {
+        return obterEstoque("select * from estoque where quantidade > 0");
+    }
+    
+    private List<Estoque> obterEstoque(String query){
+        ArrayList<Estoque> estoques = new ArrayList<>();
+        try {
+            Connection conexao = FabricaConexao.conectar();
+            PreparedStatement stmt = conexao.prepareStatement(query);
+            ResultSet rs = stmt.executeQuery();
+            FabricaConexao.fecharConexao();
+            while(rs.next())
+                estoques.add(carregarEstoque(rs));
+        } catch (SQLException ex) {
+            Logger.getLogger(EstoqueDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return estoques;  
     }
     
 }

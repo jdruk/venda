@@ -30,7 +30,7 @@ public class VendaDaoImplTest {
     @Test
     public void testCriar() {
         System.out.println("criar venda");
-        Cliente cliente = clienteDao.todas().get(0);
+        Cliente cliente = clienteDao.todos().get(0);
         assertNotNull(cliente);
         venda.setCliente(cliente);
         venda.setData(new Date());
@@ -51,8 +51,8 @@ public class VendaDaoImplTest {
     public void testAtualizar() {
         System.out.println("atualizar venda");
         venda.setTipo(1);
-        assertFalse(clienteDao.todas().isEmpty());
-        Cliente cliente = clienteDao.todas().get(0);
+        assertFalse(clienteDao.todos().isEmpty());
+        Cliente cliente = clienteDao.todos().get(0);
         venda.setCliente(cliente);
         instance.atualizar(venda);
     }

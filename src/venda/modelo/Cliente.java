@@ -1,6 +1,6 @@
 package venda.modelo;
 
-public class Cliente extends Pessoa {
+public class Cliente extends Pessoa implements Comparable<Cliente>{
 
     private Integer codigo;
     private String rg;
@@ -47,5 +47,17 @@ public class Cliente extends Pessoa {
     public void setPlanoDeFidelidade(boolean planoDeFidelidade) {
         this.planoDeFidelidade = planoDeFidelidade;
     }
+
+    @Override
+    public int compareTo(Cliente outroCliente) {
+        return nome.compareTo(outroCliente.getNome());
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    
 
 }

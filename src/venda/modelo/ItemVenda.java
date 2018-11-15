@@ -50,5 +50,21 @@ public class ItemVenda {
         this.valorVenda = valorVenda;
     }
     
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+
+        ItemVenda item = (ItemVenda) obj;
+        if(this.produto.equals(item.getProduto()) && this.venda.equals(item.venda)){
+            return true;
+        }
+        
+        return codigo != 0 ? codigo == item.getCodigo() : produto.getCodigo() == 0;
+    }
     
 }

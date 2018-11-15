@@ -17,4 +17,6 @@ public interface EstoqueDao {
     Estoque buscar(Produto p);
 
     List<Estoque> todos();
+    
+    List<Estoque> disponiveis();
 }

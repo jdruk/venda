@@ -6,13 +6,16 @@ public class Principal extends javax.swing.JFrame {
 
     private final JInternalFrame clientePrincipal;
     private final JInternalFrame produtoPrincipal;
+    private final JInternalFrame vendaPrincipal;
     
     public Principal() {
         initComponents();
         clientePrincipal = new ClienteTelaPrincipal();
         produtoPrincipal = new ProdutoPrincipal();
+        vendaPrincipal = new VendaPrincipal();
         jdPainel.add(clientePrincipal);
         jdPainel.add(produtoPrincipal);
+        jdPainel.add(vendaPrincipal);
         
     }
 
@@ -24,6 +27,7 @@ public class Principal extends javax.swing.JFrame {
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
+        jMenu3 = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -48,6 +52,14 @@ public class Principal extends javax.swing.JFrame {
         });
         jMenuBar1.add(jMenu2);
 
+        jMenu3.setText("Venda");
+        jMenu3.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jMenu3MouseClicked(evt);
+            }
+        });
+        jMenuBar1.add(jMenu3);
+
         setJMenuBar(jMenuBar1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -70,12 +82,15 @@ public class Principal extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenu1MouseClicked
 
     private void jMenu2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenu2ActionPerformed
-       // produtoPrincipal.setVisible(true);
     }//GEN-LAST:event_jMenu2ActionPerformed
 
     private void jMenu2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu2MouseClicked
         produtoPrincipal.setVisible(true);
     }//GEN-LAST:event_jMenu2MouseClicked
+
+    private void jMenu3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu3MouseClicked
+        vendaPrincipal.setVisible(true);
+    }//GEN-LAST:event_jMenu3MouseClicked
 
     public static void main(String args[]) {
         try {
@@ -105,6 +120,7 @@ public class Principal extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
+    private javax.swing.JMenu jMenu3;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JDesktopPane jdPainel;
     // End of variables declaration//GEN-END:variables

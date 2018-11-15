@@ -9,5 +9,5 @@ public interface ClienteDao {
     void deletar(Cliente cliente);
     void atualizar(Cliente cliente);
     Cliente buscar(int cliente);
-    public ArrayList<Cliente> todas();
+    public ArrayList<Cliente> todos();
 }

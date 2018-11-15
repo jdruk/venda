@@ -9,7 +9,7 @@ import venda.modelo.Cliente;
 public class ClienteDataTable extends AbstractTableModel {
 
     private final ClienteDao clienteDao = new ClienteDaoImpl();
-    private ArrayList<venda.modelo.Cliente> clientes = clienteDao.todas();
+    private ArrayList<venda.modelo.Cliente> clientes = clienteDao.todos();
     private final String[] colunas = {"Nome", "Endereço"};
 
     @Override
@@ -39,7 +39,7 @@ public class ClienteDataTable extends AbstractTableModel {
     }
 
     public void adicionarLinha() {
-        clientes = clienteDao.todas();
+        clientes = clienteDao.todos();
         this.fireTableDataChanged();
     }
 

@@ -1,6 +1,6 @@
 package venda.modelo;
 
-public class Estoque {
+public class Estoque implements Comparable<Estoque>{
 
     private int codigo;
     private Produto produto;
@@ -30,4 +30,27 @@ public class Estoque {
         this.quantidade = quantidade;
     }
 
+    @Override
+    public int compareTo(Estoque outro) {
+        return produto.getNome().compareTo(outro.getProduto().getNome());
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+
+        Estoque estoque = (Estoque) obj;
+        
+        return produto != null ? produto.equals(estoque.getProduto()) : estoque.getProduto() == null;
+    }
+
+    @Override
+    public String toString(){
+        return produto.getNome();
+    }
 }

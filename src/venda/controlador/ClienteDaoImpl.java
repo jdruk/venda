@@ -98,11 +98,11 @@ public class ClienteDaoImpl implements ClienteDao {
     }
 
     @Override
-    public ArrayList<Cliente> todas() {
+    public ArrayList<Cliente> todos() {
         ArrayList<Cliente> clientes = null;
         try {
             Connection conexao = FabricaConexao.conectar();
-            String query = "select * from cliente ";
+            String query = "select * from cliente order by nome";
             PreparedStatement stmt = conexao.prepareStatement(query);
             ResultSet rs = stmt.executeQuery();
             clientes = new ArrayList<>();

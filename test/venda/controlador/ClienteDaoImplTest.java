@@ -88,7 +88,7 @@ public class ClienteDaoImplTest {
     public void testTodas() {
         System.out.println("todos clientes");
         ClienteDao instance = new ClienteDaoImpl();
-        ArrayList<Cliente> result = instance.todas();
+        ArrayList<Cliente> result = instance.todos();
         assertFalse("Dever ter itens na lista", result.isEmpty());
     }
 
