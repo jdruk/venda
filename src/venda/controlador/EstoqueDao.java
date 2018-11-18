@@ -3,6 +3,7 @@ package venda.controlador;
 import java.util.List;
 import venda.modelo.Estoque;
 import venda.modelo.Produto;
+import venda.utilitario.QuantidadeException;
 
 public interface EstoqueDao {
 
@@ -19,4 +20,8 @@ public interface EstoqueDao {
     List<Estoque> todos();
     
     List<Estoque> disponiveis();
+    
+    void acrescentarEstoque(Produto produto, int quantidade);
+    
+    boolean decrementarEstoque(Produto produto, int quantidade);
 }

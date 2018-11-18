@@ -8,24 +8,31 @@ import java.sql.*;
 import java.util.ArrayList;
 import venda.modelo.Venda;
 import venda.utilitario.FabricaConexao;
+import venda.utilitario.QuantidadeException;
 
 public class ItemVendaDaoImpl implements ItemVendaDao {
 
+    private EstoqueDao estoqueDao = new EstoqueDaoImpl();
+
     @Override
-    public void criar(ItemVenda itemVenda) {
-         try {
-            Connection conexao = FabricaConexao.conectar();
-            String query = "insert into itemvenda (codigo,venda_id, quantidade, produto_id, valor) values (null, ?,?,?,?) ";
-            PreparedStatement stmt = conexao.prepareStatement(query,
-                    Statement.RETURN_GENERATED_KEYS);
-            stmt.setInt(1, itemVenda.getVenda().getCodigo());
-            stmt.setInt(2, itemVenda.getQuantidade());
-            stmt.setInt(3, itemVenda.getProduto().getCodigo());
-            stmt.setBigDecimal(4, itemVenda.getValorVenda());
-            stmt.executeUpdate();
-            FabricaConexao.fecharConexao();
-        } catch (SQLException ex) {
-            Logger.getLogger(VendaDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
+    public void criar(ItemVenda itemVenda) throws QuantidadeException {
+        if (estoqueDao.decrementarEstoque(itemVenda.getProduto(), itemVenda.getQuantidade())) {
+            try {
+                Connection conexao = FabricaConexao.conectar();
+                String query = "insert into itemvenda (codigo,venda_id, quantidade, produto_id, valor) values (null, ?,?,?,?) ";
+                PreparedStatement stmt = conexao.prepareStatement(query,
+                        Statement.RETURN_GENERATED_KEYS);
+                stmt.setInt(1, itemVenda.getVenda().getCodigo());
+                stmt.setInt(2, itemVenda.getQuantidade());
+                stmt.setInt(3, itemVenda.getProduto().getCodigo());
+                stmt.setBigDecimal(4, itemVenda.getValorVenda());
+                stmt.executeUpdate();
+                FabricaConexao.fecharConexao();
+            } catch (SQLException ex) {
+                Logger.getLogger(VendaDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else {
+            throw new QuantidadeException();
         }
     }
 
@@ -34,33 +41,41 @@ public class ItemVendaDaoImpl implements ItemVendaDao {
         try {
             Connection conexao = FabricaConexao.conectar();
             String query = "delete from itemvenda where codigo = ?";
-            PreparedStatement stmt = conexao.prepareStatement(query,
-                    Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement stmt = conexao.prepareStatement(query);
             stmt.setInt(1, itemVenda.getCodigo());
             stmt.executeUpdate();
             FabricaConexao.fecharConexao();
+            estoqueDao.acrescentarEstoque(itemVenda.getProduto(), itemVenda.getQuantidade());
         } catch (SQLException ex) {
             Logger.getLogger(VendaDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     @Override
-    public void atualizar(ItemVenda itemVenda) {
-        try {
-            Connection conexao = FabricaConexao.conectar();
-            String query = "update itemvenda set venda_id = ?, quantidade =? , produto_id = ?, valor =? where codigo = ? ";
-            PreparedStatement stmt = conexao.prepareStatement(query,
-                    Statement.RETURN_GENERATED_KEYS);
-            stmt.setInt(1, itemVenda.getVenda().getCodigo());
-            stmt.setInt(2, itemVenda.getQuantidade());
-            stmt.setInt(3, itemVenda.getProduto().getCodigo());
-            stmt.setBigDecimal(4, itemVenda.getValorVenda());
-            stmt.setInt(5, itemVenda.getCodigo());
-            stmt.executeUpdate();
-            FabricaConexao.fecharConexao();
-        } catch (SQLException ex) {
-            Logger.getLogger(VendaDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
+    public void atualizar(ItemVenda itemVenda) throws QuantidadeException {
+        ItemVenda antigo = buscar(itemVenda.getCodigo());
+        estoqueDao.acrescentarEstoque(antigo.getProduto(), antigo.getQuantidade());
+        if (estoqueDao.decrementarEstoque(itemVenda.getProduto(), itemVenda.getQuantidade())) {
+            try {
+                Connection conexao = FabricaConexao.conectar();
+                String query = "update itemvenda set venda_id = ?, quantidade =? , produto_id = ?, valor =? where codigo = ? ";
+                PreparedStatement stmt = conexao.prepareStatement(query,
+                        Statement.RETURN_GENERATED_KEYS);
+                stmt.setInt(1, itemVenda.getVenda().getCodigo());
+                stmt.setInt(2, itemVenda.getQuantidade());
+                stmt.setInt(3, itemVenda.getProduto().getCodigo());
+                stmt.setBigDecimal(4, itemVenda.getValorVenda());
+                stmt.setInt(5, itemVenda.getCodigo());
+                stmt.executeUpdate();
+                FabricaConexao.fecharConexao();
+            } catch (SQLException ex) {
+                Logger.getLogger(VendaDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else {
+            estoqueDao.decrementarEstoque(antigo.getProduto(), antigo.getQuantidade());
+            throw new QuantidadeException();
         }
+
     }
 
     @Override
@@ -71,14 +86,14 @@ public class ItemVendaDaoImpl implements ItemVendaDao {
             PreparedStatement stmt = conexao.prepareStatement("select * from itemvenda where codigo = ?");
             stmt.setInt(1, codigo);
             ResultSet rs = stmt.executeQuery();
-            if(rs.next()){
+            if (rs.next()) {
                 item = carregarItemVenda(rs);
             }
-                   
+
         } catch (SQLException ex) {
             Logger.getLogger(ItemVendaDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
-         return item;
+        return item;
     }
 
     @Override
@@ -94,9 +109,8 @@ public class ItemVendaDaoImpl implements ItemVendaDao {
         }
         return itens;
     }
-    
-    
-    private ItemVenda carregarItemVenda(ResultSet rs){
+
+    private ItemVenda carregarItemVenda(ResultSet rs) {
         ItemVenda item = null;
         try {
             item = new ItemVenda();
@@ -125,5 +139,5 @@ public class ItemVendaDaoImpl implements ItemVendaDao {
         }
         return rs;
     }
-    
+
 }

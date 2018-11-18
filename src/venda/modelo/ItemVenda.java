@@ -10,6 +10,15 @@ public class ItemVenda {
     private int quantidade;
     private BigDecimal valorVenda;
 
+    public ItemVenda(Venda venda, Produto produto, int quantidade) {
+        this.venda = venda;
+        this.produto = produto;
+        this.quantidade = quantidade;
+        valorVenda = produto.getValor();
+    }
+    
+    public ItemVenda(){}
+
     public int getCodigo() {
         return codigo;
     }

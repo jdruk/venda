@@ -2,41 +2,31 @@ package venda.visao;
 
 import java.math.BigDecimal;
 import java.util.List;
-import javax.swing.table.AbstractTableModel;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import venda.modelo.*;
 import venda.controlador.*;
+import venda.utilitario.QuantidadeException;
 
-
-public class ItemVendaDataTable extends AbstractTableModel{
+public class ItemVendaDataTable extends TableModel {
 
     private Venda venda;
-    private ItemVendaDao itemVendaDao = new ItemVendaDaoImpl();
+    private final ItemVendaDao itemVendaDao = new ItemVendaDaoImpl();
     private List<ItemVenda> itens;
-    private String[] colunas = {"Nome", "Preço", "Quantidade", "Valor"};
-            
-    public ItemVendaDataTable(Venda venda){
-        super();
+
+    public ItemVendaDataTable(Venda venda) {
         itens = itemVendaDao.todos(venda);
+        colunas = new String[]{"Nome", "Preço", "Quantidade", "Valor"};
     }
-    
-    @Override
-    public String getColumnName(int coluna) {
-        return colunas[coluna];
-    }
-    
+
     @Override
     public int getRowCount() {
         return itens.size();
     }
 
     @Override
-    public int getColumnCount() {
-        return colunas.length;
-    }
-
-    @Override
     public Object getValueAt(int linha, int coluna) {
-        switch(coluna){
+        switch (coluna) {
             case 0:
                 return itens.get(linha).getProduto().getNome();
             case 1:
@@ -48,25 +38,25 @@ public class ItemVendaDataTable extends AbstractTableModel{
         }
         return null;
     }
-    
-    public void adicionarLinha(ItemVenda itemVenda){
-        if(itens.contains(itemVenda)){
-            int index = itens.indexOf(itemVenda);
+
+    public void adicionarLinha(ItemVenda itemVenda) throws QuantidadeException {
+        int index = itens.indexOf(itemVenda);
+        if (index != -1) {
             itens.get(index)
                     .setQuantidade(itemVenda.getQuantidade());
             itemVendaDao.atualizar(itens.get(index));
-                    
-        }else {
+
+        } else {
             itemVendaDao.criar(itemVenda);
             itens = itemVendaDao.todos(venda);
         }
         this.fireTableDataChanged();
     }
-    
-    public void removeItemVenda(int linha){
+
+    public void removeItemVenda(int linha) {
         itemVendaDao.deletar(itens.get(linha));
         itens.remove(linha);
         this.fireTableRowsDeleted(linha, linha);
     }
-    
+
 }

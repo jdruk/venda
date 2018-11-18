@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 import venda.modelo.Estoque;
 import venda.modelo.Produto;
 import venda.utilitario.FabricaConexao;
+import venda.utilitario.QuantidadeException;
 
 public class EstoqueDaoImpl implements EstoqueDao{
 
@@ -122,5 +123,25 @@ public class EstoqueDaoImpl implements EstoqueDao{
         }
         return estoques;  
     }
+
+    @Override
+    public void acrescentarEstoque(Produto produto, int quantidade) {
+        Estoque estoque = buscar(produto);
+        estoque.setQuantidade(estoque.getQuantidade() + quantidade);
+        atualizar(estoque);
+    }
+
+    @Override
+    public boolean decrementarEstoque(Produto produto, int quantidade) {
+        Estoque estoque = buscar(produto);
+        if(estoque.getQuantidade()< quantidade){
+            return false;
+        }
+        estoque.setQuantidade(estoque.getQuantidade() - quantidade);
+        atualizar(estoque);
+        
+        return true;
+    }
+    
     
 }

@@ -1,28 +1,36 @@
 package venda.visao;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.TreeSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import venda.controlador.ClienteDao;
 import venda.controlador.ClienteDaoImpl;
 import venda.controlador.EstoqueDao;
 import venda.controlador.EstoqueDaoImpl;
 import venda.modelo.Cliente;
 import venda.modelo.Estoque;
+import venda.modelo.ItemVenda;
 import venda.modelo.Venda;
+import venda.utilitario.QuantidadeException;
 
 public class VendaTela extends javax.swing.JInternalFrame {
 
     private ClienteDao clienteDao = new ClienteDaoImpl();
     private EstoqueDao estoqueDao = new EstoqueDaoImpl();
-    private TreeSet<Estoque> estoques;
+    private List<Estoque> estoques;
     private TreeSet<Cliente> clientes;
-    private ItemVendaDataTable vendaDataTable;
-
+    private ItemVendaDataTable itemVendaDataTable;
+    private Venda venda;
+    
     public VendaTela(Venda venda) {
         initComponents();
+        this.venda = venda;
         inicializarListas();
-        vendaDataTable = new ItemVendaDataTable(venda);
-        jtItensVenda.setModel(vendaDataTable);
+        itemVendaDataTable = new ItemVendaDataTable(venda);
+        jtItensVenda.setModel(itemVendaDataTable);
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -146,6 +154,11 @@ public class VendaTela extends javax.swing.JInternalFrame {
         jtSubTotal.setEditable(false);
 
         jtAdicionarItem.setText("Add item");
+        jtAdicionarItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jtAdicionarItemActionPerformed(evt);
+            }
+        });
 
         jTextField5.setEditable(false);
 
@@ -275,6 +288,18 @@ public class VendaTela extends javax.swing.JInternalFrame {
         inicializarJCProdutos();
     }//GEN-LAST:event_formInternalFrameOpened
 
+    private void jtAdicionarItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jtAdicionarItemActionPerformed
+        Estoque estoque = estoques.get(jcProdutos.getSelectedIndex());
+        estoque.getProduto();
+        int quantidade = Integer.parseInt(jtQuantidadeProduto.getText());
+        try {
+            itemVendaDataTable.adicionarLinha(new ItemVenda(venda, estoque.getProduto(), quantidade));
+        } catch (QuantidadeException ex) {
+            JOptionPane.showMessageDialog(this, "Quantidade insuficiente em estoque!");
+            Logger.getLogger(VendaTela.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jtAdicionarItemActionPerformed
+
     private void inicializarJCProdutos(){
         Iterator<Estoque> iterator = estoques.iterator();
         while (iterator.hasNext()) {
@@ -290,7 +315,7 @@ public class VendaTela extends javax.swing.JInternalFrame {
     }
     
     private void inicializarListas() {
-        estoques = new TreeSet<>(estoqueDao.disponiveis());
+        estoques = estoqueDao.disponiveis();
         clientes = new TreeSet<>(clienteDao.todos());
     }
 
