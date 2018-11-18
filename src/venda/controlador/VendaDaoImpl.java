@@ -1,5 +1,7 @@
 package venda.controlador;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import venda.modelo.Venda;
 import java.sql.*;
@@ -8,10 +10,10 @@ import java.util.logging.Logger;
 import venda.modelo.Cliente;
 import venda.utilitario.FabricaConexao;
 
-public class VendaDaoImpl implements VendaDao {
+public class VendaDaoImpl extends  UtilDaoImpl implements VendaDao {
 
     @Override
-    public void criar(Venda venda) {
+    public Venda criar(Venda venda) {
         try {
             Connection conexao = FabricaConexao.conectar();
             String query = "insert into venda(codigo,cliente_id,data_venda, tipo, status, desconto) values (null, ?,?,?,?,?) ";
@@ -22,13 +24,26 @@ public class VendaDaoImpl implements VendaDao {
             stmt.setInt(3, venda.getTipo());
             stmt.setInt(4, venda.getStatus());
             stmt.setBigDecimal(5, venda.getDesconto());
-            stmt.executeUpdate();
+            venda.setCodigo(ultimoCodigoGerado(stmt.executeUpdate(), stmt));
             FabricaConexao.fecharConexao();
         } catch (SQLException ex) {
             Logger.getLogger(VendaDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
+        return venda;
     }
 
+    public static Venda getVendaInstancePadrao(){
+        Venda venda = new Venda();
+        venda.setTipo(Venda.A_VISTA);
+        venda.setData(new java.util.Date());
+        venda.setCliente(ClienteDaoImpl.getClientePadrao());
+        venda.setDesconto(new BigDecimal(BigInteger.ZERO));
+        venda.setStatus(Venda.Status.ABERTO.toInt());
+        
+        new VendaDaoImpl().criar(venda);
+        return venda;
+    }
+    
     @Override
     public void deletar(Venda venda) {
         try {
@@ -119,6 +134,7 @@ public class VendaDaoImpl implements VendaDao {
             venda.setStatus(rs.getInt("status"));
             venda.setTipo(rs.getInt("tipo"));
             venda.setDesconto(rs.getBigDecimal("desconto"));
+            venda.setItensVenda(new ItemVendaDaoImpl().todos(venda));
         } catch (SQLException ex) {
             Logger.getLogger(VendaDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
         }

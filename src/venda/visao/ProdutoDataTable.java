@@ -1,33 +1,25 @@
 package venda.visao;
 
 import java.util.List;
-import javax.swing.table.AbstractTableModel;
 import venda.modelo.Estoque;
 import venda.controlador.EstoqueDaoImpl;
 import venda.controlador.EstoqueDao;
 import venda.controlador.ProdutoDao;
 import venda.controlador.ProdutoDaoImpl;
 
-public class ProdutoDataTable extends AbstractTableModel{
+public class ProdutoDataTable extends TableModel{
 
     private EstoqueDao estoqueDao = new EstoqueDaoImpl();
     private ProdutoDao produtoDao = new ProdutoDaoImpl();
     private List<Estoque> itens = estoqueDao.todos();
-    private final String[] colunas = {"Nome", "Preço", "Quantidade"};
-          
-    @Override
-    public String getColumnName(int coluna) {
-        return colunas[coluna];
+
+    public ProdutoDataTable() {
+        colunas = new String[]{"Nome", "Preço", "Quantidade"};
     }
     
     @Override
     public int getRowCount() {
         return itens.size();
-    }
-
-    @Override
-    public int getColumnCount() {
-        return colunas.length;
     }
 
     @Override

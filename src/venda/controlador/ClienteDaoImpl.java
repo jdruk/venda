@@ -7,18 +7,12 @@ import java.util.logging.Logger;
 import venda.modelo.Cliente;
 import venda.utilitario.FabricaConexao;
 
-public class ClienteDaoImpl implements ClienteDao {
+public class ClienteDaoImpl extends UtilDaoImpl implements ClienteDao {
 
-    private int ultimoCodeGerado(int linhasAfetadas, PreparedStatement stmt) throws SQLException {
-        if (linhasAfetadas == 0) {
-            throw new SQLException("não conseguiu inserir");
-        }
-        try ( ResultSet generatedKeys = stmt.getGeneratedKeys()) {
-            if (generatedKeys.next()) {
-                return generatedKeys.getInt(1);
-            }
-        }
-        return -1;
+    static final int ID_CLIENTE_PADRAO = 2;
+    
+    public static Cliente getClientePadrao() {
+        return new ClienteDaoImpl().buscar(ID_CLIENTE_PADRAO);
     }
 
     @Override
@@ -30,7 +24,7 @@ public class ClienteDaoImpl implements ClienteDao {
             stmt.setString(1, cliente.getNome());
             stmt.setString(2, cliente.getRg());
             stmt.setBoolean(3, cliente.isPlanoDeFidelidade());
-            cliente.setCodigo(ultimoCodeGerado(stmt.executeUpdate(), stmt));
+            cliente.setCodigo(ultimoCodigoGerado(stmt.executeUpdate(), stmt));
             FabricaConexao.fecharConexao();
 
             // endereco

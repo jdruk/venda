@@ -1,14 +1,30 @@
 package venda.modelo;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 
 public class Venda {
 
-    public Venda(){}
-    private Venda(Builder builder){}
+    public final static int A_VISTA = 0;
+    public final static int MIXTER = 1;
+    public final static int PARCELADA = 2;
     
+    public Venda() {
+    }
+
+    private Venda(Builder builder) {
+    }
+
+    public BigDecimal getValorTotal() {
+        return itensVenda.stream().map(
+                x -> x.getValorVenda().multiply(
+                        BigDecimal.valueOf(x.getQuantidade())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
     public static enum Status {
         ABERTO(0), FINALIZADO(1), ESTORNADO(2);
         private final int code;
@@ -21,16 +37,32 @@ public class Venda {
             return code;
         }
 
-        @Override
-        public String toString() {
-            return String.valueOf(code);
-        }
     }
     
-    
+    public Status verificarStatus(){
+        switch(status){
+            case 0:
+                return Status.ABERTO;
+            case 1:
+                return Status.FINALIZADO;
+            case 2:
+                return Status.ESTORNADO;
+        }
+        return null;
+    }
 
-    public static class Builder{
-        
+    public boolean estornar() {
+        LocalDate dataVenda = this.data.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        if (LocalDate.now().minusDays(7).isBefore(dataVenda)) {
+            status = Status.ESTORNADO.toInt();
+            return true;
+        }
+
+        return false;
+    }
+
+    public static class Builder {
+
         private final int codigo;
         private Date data;
         private List<ItemVenda> itensVenda;
@@ -39,48 +71,48 @@ public class Venda {
         private List<Pagamento> pagamentos;
         private int tipo;
         private BigDecimal desconto;
-        
-        public Builder(int codigo, Cliente cliente){
+
+        public Builder(int codigo, Cliente cliente) {
             this.codigo = codigo;
             this.cliente = cliente;
         }
-        
-        public Builder comStatus(Status status){
+
+        public Builder comStatus(Status status) {
             this.status = status.toInt();
             return this;
         }
-        
-        public Builder data(Date data){
+
+        public Builder data(Date data) {
             this.data = data;
             return this;
         }
-        
-        public Builder tipo(int tipo){
+
+        public Builder tipo(int tipo) {
             this.tipo = tipo;
             return this;
         }
-        
-        public Builder descontoDe(BigDecimal desconto){
+
+        public Builder descontoDe(BigDecimal desconto) {
             this.desconto = desconto;
             return this;
         }
-        
-        public Builder itemDaVenda(List<ItemVenda> itens){
+
+        public Builder itemDaVenda(List<ItemVenda> itens) {
             this.itensVenda = itens;
             return this;
         }
-        
-        public Builder pagamentos(List<Pagamento> pagamentos){
+
+        public Builder pagamentos(List<Pagamento> pagamentos) {
             this.pagamentos = pagamentos;
             return this;
         }
-        
-        public Venda build(){
+
+        public Venda build() {
             return new Venda(this);
         }
-        
+
     }
-    
+
     private int codigo;
     private Date data;
     private List<ItemVenda> itensVenda;
@@ -153,13 +185,13 @@ public class Venda {
     public void setStatus(int status) {
         this.status = status;
     }
-    
+
     public static void main(String[] args) {
         Venda venda = new Venda.Builder(0, new Cliente())
                 .descontoDe(new BigDecimal(2))
                 .comStatus(Status.ABERTO)
                 .build();
-                
+
     }
 
 }

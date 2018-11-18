@@ -10,19 +10,8 @@ import java.util.logging.Logger;
 import venda.modelo.Estoque;
 import venda.utilitario.FabricaConexao;
 
-public class ProdutoDaoImpl implements ProdutoDao {
+public class ProdutoDaoImpl extends  UtilDaoImpl implements ProdutoDao {
 
-    private int ultimoCodeGerado(int linhasAfetadas, PreparedStatement stmt) throws SQLException {
-        if (linhasAfetadas == 0) {
-            throw new SQLException("não conseguiu inserir");
-        }
-        try ( ResultSet generatedKeys = stmt.getGeneratedKeys()) {
-            if (generatedKeys.next()) {
-                return generatedKeys.getInt(1);
-            }
-        }
-        return -1;
-    }
 
     @Override
     public void criar(Produto produto) {
@@ -35,7 +24,7 @@ public class ProdutoDaoImpl implements ProdutoDao {
             PreparedStatement stmt = conexao.prepareStatement("insert into produto(codigo, nome, valor) values (null,?,?)", Statement.RETURN_GENERATED_KEYS);
             stmt.setString(1, produto.getNome());
             stmt.setBigDecimal(2, produto.getValor());
-            Integer codigo = ultimoCodeGerado(stmt.executeUpdate(), stmt);
+            Integer codigo = ultimoCodigoGerado(stmt.executeUpdate(), stmt);
             produto.setCodigo(codigo);
             FabricaConexao.fecharConexao();
         } catch (SQLException ex) {

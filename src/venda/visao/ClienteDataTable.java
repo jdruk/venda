@@ -3,18 +3,15 @@ package venda.visao;
 import java.util.ArrayList;
 import venda.controlador.ClienteDaoImpl;
 import venda.controlador.ClienteDao;
-import javax.swing.table.AbstractTableModel;
 import venda.modelo.Cliente;
 
-public class ClienteDataTable extends AbstractTableModel {
+public class ClienteDataTable extends TableModel {
 
     private final ClienteDao clienteDao = new ClienteDaoImpl();
     private ArrayList<venda.modelo.Cliente> clientes = clienteDao.todos();
-    private final String[] colunas = {"Nome", "Endereço"};
 
-    @Override
-    public String getColumnName(int coluna) {
-        return colunas[coluna];
+    public ClienteDataTable() {
+        colunas = new String[]{"Nome", "Endereço"};
     }
 
     @Override
@@ -22,11 +19,12 @@ public class ClienteDataTable extends AbstractTableModel {
         return clientes.size();
     }
 
-    @Override
-    public int getColumnCount() {
-        return colunas.length;
-    }
-
+    /**
+     *
+     * @param linha
+     * @param coluna
+     * @return
+     */
     @Override
     public Object getValueAt(int linha, int coluna) {
         switch (coluna) {

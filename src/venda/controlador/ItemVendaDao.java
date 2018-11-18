@@ -14,6 +14,6 @@ public interface ItemVendaDao {
 
     ItemVenda buscar(int codigo);
 
-    List<ItemVenda> todos(Venda venda);
+    public List<ItemVenda> todos(Venda venda);
     
 }

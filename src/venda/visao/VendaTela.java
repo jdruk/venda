@@ -8,6 +8,7 @@ import venda.controlador.EstoqueDao;
 import venda.controlador.EstoqueDaoImpl;
 import venda.modelo.Cliente;
 import venda.modelo.Estoque;
+import venda.modelo.Venda;
 
 public class VendaTela extends javax.swing.JInternalFrame {
 
@@ -15,13 +16,15 @@ public class VendaTela extends javax.swing.JInternalFrame {
     private EstoqueDao estoqueDao = new EstoqueDaoImpl();
     private TreeSet<Estoque> estoques;
     private TreeSet<Cliente> clientes;
+    private ItemVendaDataTable vendaDataTable;
 
-    public VendaTela() {
+    public VendaTela(Venda venda) {
         initComponents();
         inicializarListas();
+        vendaDataTable = new ItemVendaDataTable(venda);
+        jtItensVenda.setModel(vendaDataTable);
     }
 
-    @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
@@ -30,7 +33,7 @@ public class VendaTela extends javax.swing.JInternalFrame {
         jScrollPane2 = new javax.swing.JScrollPane();
         jTable2 = new javax.swing.JTable();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        jtItensVenda = new javax.swing.JTable();
         jrParcelado = new javax.swing.JRadioButton();
         jrMixte = new javax.swing.JRadioButton();
         jrVista = new javax.swing.JRadioButton();
@@ -92,7 +95,7 @@ public class VendaTela extends javax.swing.JInternalFrame {
             }
         });
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        jtItensVenda.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -103,7 +106,7 @@ public class VendaTela extends javax.swing.JInternalFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(jtItensVenda);
 
         jrParcelado.setText("Parcelada");
 
@@ -292,7 +295,6 @@ public class VendaTela extends javax.swing.JInternalFrame {
     }
 
     private void inicializarRadioButtons() {
-        jrVista.setSelected(true);
         jbFormasPamento.add(jrVista);
         jbFormasPamento.add(jrParcelado);
         jbFormasPamento.add(jrMixte);
@@ -312,7 +314,6 @@ public class VendaTela extends javax.swing.JInternalFrame {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTable jTable1;
     private javax.swing.JTable jTable2;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;
@@ -326,6 +327,7 @@ public class VendaTela extends javax.swing.JInternalFrame {
     private javax.swing.JRadioButton jrParcelado;
     private javax.swing.JRadioButton jrVista;
     private javax.swing.JButton jtAdicionarItem;
+    private javax.swing.JTable jtItensVenda;
     private javax.swing.JTextField jtQuantidadeProduto;
     private javax.swing.JTextField jtSubTotal;
     private javax.swing.JTextField jtTotal;
