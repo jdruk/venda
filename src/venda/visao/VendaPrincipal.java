@@ -5,9 +5,9 @@ import venda.controlador.*;
 import venda.modelo.Venda;
 
 public class VendaPrincipal extends javax.swing.JInternalFrame {
-    
-    private VendaDataTable vendaDataTable;
-    private VendaDao vendaDao = new VendaDaoImpl();
+
+    private final VendaDataTable vendaDataTable;
+    private final VendaDao vendaDao = new VendaDaoImpl();
 
     public VendaPrincipal() {
         initComponents();
@@ -51,6 +51,11 @@ public class VendaPrincipal extends javax.swing.JInternalFrame {
         });
 
         jButton2.setText("Alterar");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         jbEstornar.setText("Estornar");
         jbEstornar.addActionListener(new java.awt.event.ActionListener() {
@@ -99,18 +104,26 @@ public class VendaPrincipal extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jbEstornarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbEstornarActionPerformed
-        if(jtVenda.getSelectedRow() != -1){
+        if (jtVenda.getSelectedRow() != -1) {
             Venda venda = vendaDataTable.pegarVenda(jtVenda.getSelectedRow());
-            if(venda.estornar()){
+            if (venda.estornar()) {
                 vendaDao.atualizar(venda);
                 JOptionPane.showMessageDialog(this, "Estornado com sucesso!");
                 vendaDataTable.adicionarLinha();
-            }else{
+            } else {
                 JOptionPane.showMessageDialog(this, "Não é possível estornar... \nprazo de 7 dias expirado!");
             }
-            
+
         }
     }//GEN-LAST:event_jbEstornarActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        if (jtVenda.getSelectedRow() != -1) {
+            VendaTela vendaAlterar = new VendaTela(vendaDataTable.pegarVenda(jtVenda.getSelectedRow()));
+            this.getDesktopPane().add(vendaAlterar);
+            vendaAlterar.setVisible(true);
+        }
+    }//GEN-LAST:event_jButton2ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

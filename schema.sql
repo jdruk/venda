@@ -24,7 +24,7 @@ create table estoque(
     codigo integer identity primary key,
     produto_id integer not null,
     quantidade integer default 0,
-    foreign key (produto_id) references produto(codigo)
+    foreign key (produto_id) references produto(codigo) on delete cascade
 )
 
 create table venda(

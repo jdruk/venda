@@ -19,14 +19,15 @@ public class Venda {
     }
 
     public BigDecimal getValorTotal() {
-        return itensVenda.stream().map(
-                x -> x.getValorVenda().multiply(
-                        BigDecimal.valueOf(x.getQuantidade())))
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        return BigDecimal.ZERO;
+//        return itensVenda.stream().map(
+//                x -> x.getValorVenda().multiply(
+//                        BigDecimal.valueOf(x.getQuantidade())))
+//                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
     public static enum Status {
-        ABERTO(0), FINALIZADO(1), ESTORNADO(2);
+        ABERTO(0), FINALIZADO(1), ESTORNADO(2), PAGO(3);
         private final int code;
 
         private Status(int code) {
@@ -47,6 +48,8 @@ public class Venda {
                 return Status.FINALIZADO;
             case 2:
                 return Status.ESTORNADO;
+            case 3:
+                return Status.PAGO;    
         }
         return null;
     }

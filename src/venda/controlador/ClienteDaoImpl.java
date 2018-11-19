@@ -9,7 +9,7 @@ import venda.utilitario.FabricaConexao;
 
 public class ClienteDaoImpl extends UtilDaoImpl implements ClienteDao {
 
-    static final int ID_CLIENTE_PADRAO = 2;
+    static final int ID_CLIENTE_PADRAO = 0;
     
     public static Cliente getClientePadrao() {
         return new ClienteDaoImpl().buscar(ID_CLIENTE_PADRAO);

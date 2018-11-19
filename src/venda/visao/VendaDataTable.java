@@ -5,6 +5,7 @@
  */
 package venda.visao;
 
+import java.util.ArrayList;
 import java.util.List;
 import venda.controlador.*;
 import venda.modelo.Venda;
@@ -12,10 +13,12 @@ import venda.modelo.Venda;
 public class VendaDataTable extends TableModel {
     
     private VendaDao vendaDao = new VendaDaoImpl();
-    private  List<Venda> vendas = vendaDao.todas(); 
+    
+    private  List<Venda> vendas;
     
     public VendaDataTable(){
-        colunas = new String[]{"Nome", "Valor", "Data", "Status"};
+        colunas = new String[]{"Nome", "Data", "Status"};
+        vendas = vendaDao.todas();
     }
 
     @Override
@@ -29,10 +32,8 @@ public class VendaDataTable extends TableModel {
             case 0:
                 return vendas.get(linha).getCliente().getNome();
             case 1:
-                return vendas.get(linha).getValorTotal();
-            case 2:
                 return vendas.get(linha).getData();
-            case 3:
+            case 2:
                 return vendas.get(linha).verificarStatus();
         }
         return null;

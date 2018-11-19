@@ -37,7 +37,7 @@ public class VendaDaoImpl extends  UtilDaoImpl implements VendaDao {
         venda.setTipo(Venda.A_VISTA);
         venda.setData(new java.util.Date());
         venda.setCliente(ClienteDaoImpl.getClientePadrao());
-        venda.setDesconto(new BigDecimal(BigInteger.ZERO));
+        venda.setDesconto(BigDecimal.ZERO);
         venda.setStatus(Venda.Status.ABERTO.toInt());
         
         new VendaDaoImpl().criar(venda);
@@ -134,7 +134,7 @@ public class VendaDaoImpl extends  UtilDaoImpl implements VendaDao {
             venda.setStatus(rs.getInt("status"));
             venda.setTipo(rs.getInt("tipo"));
             venda.setDesconto(rs.getBigDecimal("desconto"));
-            venda.setItensVenda(new ItemVendaDaoImpl().todos(venda));
+            //venda.setItensVenda(new ItemVendaDaoImpl().todos(venda));
         } catch (SQLException ex) {
             Logger.getLogger(VendaDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
         }

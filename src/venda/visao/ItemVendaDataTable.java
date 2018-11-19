@@ -2,19 +2,18 @@ package venda.visao;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import venda.modelo.*;
 import venda.controlador.*;
 import venda.utilitario.QuantidadeException;
 
 public class ItemVendaDataTable extends TableModel {
 
-    private Venda venda;
+    private final Venda venda;
     private final ItemVendaDao itemVendaDao = new ItemVendaDaoImpl();
     private List<ItemVenda> itens;
 
     public ItemVendaDataTable(Venda venda) {
+        this.venda = venda;
         itens = itemVendaDao.todos(venda);
         colunas = new String[]{"Nome", "Preço", "Quantidade", "Valor"};
     }
@@ -40,16 +39,8 @@ public class ItemVendaDataTable extends TableModel {
     }
 
     public void adicionarLinha(ItemVenda itemVenda) throws QuantidadeException {
-        int index = itens.indexOf(itemVenda);
-        if (index != -1) {
-            itens.get(index)
-                    .setQuantidade(itemVenda.getQuantidade());
-            itemVendaDao.atualizar(itens.get(index));
-
-        } else {
-            itemVendaDao.criar(itemVenda);
-            itens = itemVendaDao.todos(venda);
-        }
+        itemVendaDao.criar(itemVenda);
+        itens = itemVendaDao.todos(venda);
         this.fireTableDataChanged();
     }
 
@@ -57,6 +48,14 @@ public class ItemVendaDataTable extends TableModel {
         itemVendaDao.deletar(itens.get(linha));
         itens.remove(linha);
         this.fireTableRowsDeleted(linha, linha);
+    }
+    
+    public Double subTotal(){
+        Double subtotal = 0.0;
+        for (int i = 0; i < itens.size(); i++) {
+            subtotal += itens.get(i).getProduto().getValor().multiply(new BigDecimal(itens.get(i).getQuantidade())).doubleValue();
+        }
+        return subtotal;
     }
 
 }

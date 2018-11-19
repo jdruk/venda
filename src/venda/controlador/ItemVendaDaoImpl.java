@@ -32,7 +32,7 @@ public class ItemVendaDaoImpl implements ItemVendaDao {
                 Logger.getLogger(VendaDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else {
-            throw new QuantidadeException();
+            throw  new QuantidadeException();
         }
     }
 

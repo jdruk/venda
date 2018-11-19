@@ -1,15 +1,21 @@
 package venda.visao;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Iterator;
 import java.util.List;
 import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
+import javax.swing.event.TableModelEvent;
 import venda.controlador.ClienteDao;
 import venda.controlador.ClienteDaoImpl;
 import venda.controlador.EstoqueDao;
 import venda.controlador.EstoqueDaoImpl;
+import venda.controlador.VendaDao;
+import venda.controlador.VendaDaoImpl;
 import venda.modelo.Cliente;
 import venda.modelo.Estoque;
 import venda.modelo.ItemVenda;
@@ -18,19 +24,19 @@ import venda.utilitario.QuantidadeException;
 
 public class VendaTela extends javax.swing.JInternalFrame {
 
-    private ClienteDao clienteDao = new ClienteDaoImpl();
-    private EstoqueDao estoqueDao = new EstoqueDaoImpl();
+    private final ClienteDao clienteDao = new ClienteDaoImpl();
+    private final EstoqueDao estoqueDao = new EstoqueDaoImpl();
+    private final VendaDao vendaDao = new VendaDaoImpl();
     private List<Estoque> estoques;
     private TreeSet<Cliente> clientes;
-    private ItemVendaDataTable itemVendaDataTable;
-    private Venda venda;
+    private final ItemVendaDataTable itemVendaDataTable;
+    private final Venda venda;
     
     public VendaTela(Venda venda) {
         initComponents();
         this.venda = venda;
-        inicializarListas();
         itemVendaDataTable = new ItemVendaDataTable(venda);
-        jtItensVenda.setModel(itemVendaDataTable);
+        inicialiazarComponentes();
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -45,17 +51,17 @@ public class VendaTela extends javax.swing.JInternalFrame {
         jrParcelado = new javax.swing.JRadioButton();
         jrMixte = new javax.swing.JRadioButton();
         jrVista = new javax.swing.JRadioButton();
-        jTextField1 = new javax.swing.JTextField();
-        jComboBox1 = new javax.swing.JComboBox<>();
+        jtEntradaMixter = new javax.swing.JTextField();
+        jcParcelada = new javax.swing.JComboBox<>();
         jLabel2 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
         jcClientes = new javax.swing.JComboBox<>();
         jLabel3 = new javax.swing.JLabel();
         jbAdicionarCliente = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
-        jComboBox3 = new javax.swing.JComboBox<>();
+        jcMixte = new javax.swing.JComboBox<>();
         jLabel4 = new javax.swing.JLabel();
-        jTextField2 = new javax.swing.JTextField();
+        jtStatus = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
         jtTotal = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
@@ -116,8 +122,10 @@ public class VendaTela extends javax.swing.JInternalFrame {
         ));
         jScrollPane1.setViewportView(jtItensVenda);
 
+        jbFormasPamento.add(jrParcelado);
         jrParcelado.setText("Parcelada");
 
+        jbFormasPamento.add(jrMixte);
         jrMixte.setText("Mixte");
         jrMixte.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -125,13 +133,26 @@ public class VendaTela extends javax.swing.JInternalFrame {
             }
         });
 
+        jbFormasPamento.add(jrVista);
         jrVista.setText("A vista");
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jcParcelada.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1", "2", "3", "4" }));
+        jcParcelada.setToolTipText("Quantidade de parcelas");
 
         jLabel2.setText("Pagamento");
 
         jButton1.setText("Finalizar");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
+        jcClientes.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jcClientesActionPerformed(evt);
+            }
+        });
 
         jLabel3.setText("Cliente");
 
@@ -139,11 +160,12 @@ public class VendaTela extends javax.swing.JInternalFrame {
 
         jButton3.setText("Estornar");
 
-        jComboBox3.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jcMixte.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1", "2", "3", "4" }));
+        jcMixte.setToolTipText("Quantidade de parcelas");
 
         jLabel4.setText("Status");
 
-        jTextField2.setEditable(false);
+        jtStatus.setEditable(false);
 
         jLabel5.setText("Total");
 
@@ -181,15 +203,15 @@ public class VendaTela extends javax.swing.JInternalFrame {
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jrParcelado)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jcParcelada, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jrMixte)
                                 .addGap(8, 8, 8)
-                                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jtEntradaMixter, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
-                                .addComponent(jComboBox3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jcMixte, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(layout.createSequentialGroup()
@@ -205,7 +227,7 @@ public class VendaTela extends javax.swing.JInternalFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel4)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jtStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 779, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -251,13 +273,13 @@ public class VendaTela extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jrMixte)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jComboBox3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jtEntradaMixter, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jcMixte, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jrParcelado)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jcParcelada, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(28, 28, 28)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -267,7 +289,7 @@ public class VendaTela extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jtStatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(16, 16, 16)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
@@ -291,6 +313,7 @@ public class VendaTela extends javax.swing.JInternalFrame {
     private void jtAdicionarItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jtAdicionarItemActionPerformed
         Estoque estoque = estoques.get(jcProdutos.getSelectedIndex());
         estoque.getProduto();
+        System.out.println(venda.getCodigo());
         int quantidade = Integer.parseInt(jtQuantidadeProduto.getText());
         try {
             itemVendaDataTable.adicionarLinha(new ItemVenda(venda, estoque.getProduto(), quantidade));
@@ -299,6 +322,15 @@ public class VendaTela extends javax.swing.JInternalFrame {
             Logger.getLogger(VendaTela.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_jtAdicionarItemActionPerformed
+
+    private void jcClientesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcClientesActionPerformed
+         verificarQuantidadeParcelas((Cliente) jcClientes.getSelectedItem());
+    }//GEN-LAST:event_jcClientesActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        carregarDadosPara(venda);
+        vendaDao.atualizar(venda);
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     private void inicializarJCProdutos(){
         Iterator<Estoque> iterator = estoques.iterator();
@@ -310,8 +342,9 @@ public class VendaTela extends javax.swing.JInternalFrame {
     private void inicializarJCClientes(){
         Iterator<Cliente> iterator = clientes.iterator();
         while (iterator.hasNext()) {
-            jcClientes.addItem(iterator.next().toString());
+            jcClientes.addItem(iterator.next());
         }
+        verificarClienteVenda();
     }
     
     private void inicializarListas() {
@@ -320,16 +353,15 @@ public class VendaTela extends javax.swing.JInternalFrame {
     }
 
     private void inicializarRadioButtons() {
-        jbFormasPamento.add(jrVista);
-        jbFormasPamento.add(jrParcelado);
-        jbFormasPamento.add(jrMixte);
+        jrMixte.setActionCommand("mixter");
+        jrParcelado.setActionCommand("parcelado");
+        jrVista.setActionCommand("vista");
+        verificarTipoVenda();
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton3;
-    private javax.swing.JComboBox<String> jComboBox1;
-    private javax.swing.JComboBox<String> jComboBox3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -340,21 +372,103 @@ public class VendaTela extends javax.swing.JInternalFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable jTable2;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
     private javax.swing.JTextField jTextField5;
     private javax.swing.JTextField jTextField6;
     private javax.swing.JButton jbAdicionarCliente;
     private javax.swing.ButtonGroup jbFormasPamento;
-    private javax.swing.JComboBox<String> jcClientes;
+    private javax.swing.JComboBox<Cliente> jcClientes;
+    private javax.swing.JComboBox<String> jcMixte;
+    private javax.swing.JComboBox<String> jcParcelada;
     private javax.swing.JComboBox<String> jcProdutos;
     private javax.swing.JRadioButton jrMixte;
     private javax.swing.JRadioButton jrParcelado;
     private javax.swing.JRadioButton jrVista;
     private javax.swing.JButton jtAdicionarItem;
+    private javax.swing.JTextField jtEntradaMixter;
     private javax.swing.JTable jtItensVenda;
     private javax.swing.JTextField jtQuantidadeProduto;
+    private javax.swing.JTextField jtStatus;
     private javax.swing.JTextField jtSubTotal;
     private javax.swing.JTextField jtTotal;
     // End of variables declaration//GEN-END:variables
+
+    private void verificarTipoVenda() {
+        switch(venda.getTipo()){
+            case Venda.A_VISTA :
+                jrVista.setSelected(true);
+                break;
+            case Venda.MIXTER :
+                jrMixte.setSelected(true);
+                break;
+            case Venda.PARCELADA :
+                jrParcelado.setSelected(true);
+                break;
+        }
+    }
+
+    private void verificarClienteVenda() {
+        jcClientes.setSelectedItem(venda.getCliente());
+        
+        verificarQuantidadeParcelas((Cliente) jcClientes.getSelectedItem());
+    }
+
+    private void atualizarSubtotal() {
+        jtSubTotal.setText(itemVendaDataTable.subTotal().toString());
+    }
+    
+    private void verificarStatusVenda(){
+        jtStatus.setText(venda.verificarStatus().toString());
+    }
+    
+    private void inicialiazarComponentes(){
+        verificarStatusVenda();
+        inicializarListas();
+        jtItensVenda.setModel(itemVendaDataTable);
+        itemVendaDataTable.addTableModelListener((TableModelEvent table) -> {
+            atualizarSubtotal();
+        });
+    }
+
+    private void verificarQuantidadeParcelas(Cliente cliente) {
+        jcParcelada.removeAllItems();
+        jcMixte.removeAllItems();
+        
+        opcoesPadroes(jcParcelada);
+        opcoesPadroes(jcMixte);
+        
+        if(cliente.isPlanoDeFidelidade()){
+            jcMixte.addItem("5");
+            jcMixte.addItem("6");
+            jcParcelada.addItem("5");
+            jcParcelada.addItem("6");
+        }
+    }
+
+    private void opcoesPadroes(JComboBox<String> jc) {
+        jc.addItem("1");
+        jc.addItem("2");
+        jc.addItem("3");
+        jc.addItem("4");
+    }
+
+    private void carregarDadosPara(Venda venda) {
+        venda.setCliente((Cliente) jcClientes.getSelectedItem());
+        venda.setStatus(Venda.Status.FINALIZADO.toInt());
+        if(validarFormaDePagamento(
+                jbFormasPamento.getSelection().getActionCommand())){
+        
+        }
+    }
+    
+    private boolean validarFormaDePagamento(String command){
+        if(command.equals("mixter")){
+            try{
+                BigDecimal valor = new BigDecimal(jtEntradaMixter.getText());
+            } catch(Exception e){
+                return false;
+            }
+        }
+        return true;
+    }
+    
 }

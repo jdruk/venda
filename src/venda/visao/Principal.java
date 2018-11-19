@@ -7,7 +7,7 @@ public class Principal extends javax.swing.JFrame {
     private final JInternalFrame clientePrincipal;
     private final JInternalFrame produtoPrincipal;
     private final JInternalFrame vendaPrincipal;
-    
+
     public Principal() {
         initComponents();
         clientePrincipal = new ClienteTelaPrincipal();
@@ -16,7 +16,7 @@ public class Principal extends javax.swing.JFrame {
         jdPainel.add(clientePrincipal);
         jdPainel.add(produtoPrincipal);
         jdPainel.add(vendaPrincipal);
-        
+
     }
 
     @SuppressWarnings("unchecked")
@@ -79,17 +79,17 @@ public class Principal extends javax.swing.JFrame {
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
         // TODO add your handling code here:
-         clientePrincipal.setVisible(true);
+        clientePrincipal.setVisible(true);
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
         // TODO add your handling code here:
-         produtoPrincipal.setVisible(true);
+        produtoPrincipal.setVisible(true);
     }//GEN-LAST:event_jMenuItem2ActionPerformed
 
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
         // TODO add your handling code here:
-         vendaPrincipal.setVisible(true);
+        vendaPrincipal.setVisible(true);
     }//GEN-LAST:event_jMenuItem3ActionPerformed
 
     public static void main(String args[]) {
@@ -108,7 +108,7 @@ public class Principal extends javax.swing.JFrame {
         });
     }
 
-    
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu jMenu4;
     private javax.swing.JMenuBar jMenuBar1;

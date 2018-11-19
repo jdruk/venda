@@ -1,11 +1,14 @@
 package venda.controlador;
 
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Ignore;
 import venda.modelo.ItemVenda;
+import venda.utilitario.QuantidadeException;
 
 public class ItemVendaDaoImplTest {
     
@@ -25,14 +28,18 @@ public class ItemVendaDaoImplTest {
 
     @Test
     public void testCriar() {
-        System.out.println("criar item venda");
-        ItemVenda itemVenda = new ItemVenda();
-        itemVenda.setProduto(produtoDao.todos().get(0));
-        itemVenda.setVenda(vendaDao.todas().get(0));
-        itemVenda.setQuantidade(10);
-        itemVenda.setValorVenda(itemVenda.getProduto().getValor());
-        ItemVendaDaoImpl instance = new ItemVendaDaoImpl();
-        instance.criar(itemVenda);
+        try {
+            System.out.println("criar item venda");
+            ItemVenda itemVenda = new ItemVenda();
+            itemVenda.setProduto(produtoDao.todos().get(0));
+            itemVenda.setVenda(vendaDao.todas().get(0));
+            itemVenda.setQuantidade(10);
+            itemVenda.setValorVenda(itemVenda.getProduto().getValor());
+            ItemVendaDaoImpl instance = new ItemVendaDaoImpl();
+            instance.criar(itemVenda);
+        } catch (QuantidadeException ex) {
+            Logger.getLogger(ItemVendaDaoImplTest.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     @Test
@@ -47,7 +54,11 @@ public class ItemVendaDaoImplTest {
         System.out.println("atualizar");
         ItemVenda item = instance.buscar(2);
         item.setProduto(produtoDao.todos().get(produtoDao.todos().size() -1 ));
-        instance.atualizar(item);
+        try {
+            instance.atualizar(item);
+        } catch (QuantidadeException ex) {
+            Logger.getLogger(ItemVendaDaoImplTest.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     @Test

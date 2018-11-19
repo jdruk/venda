@@ -58,6 +58,9 @@ public class Cliente extends Pessoa implements Comparable<Cliente>{
         return super.equals(obj); //To change body of generated methods, choose Tools | Templates.
     }
     
-    
+    @Override
+    public String toString() {
+        return  nome + " - RG " + rg;
+    }
 
 }
