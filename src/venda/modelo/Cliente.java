@@ -55,7 +55,15 @@ public class Cliente extends Pessoa implements Comparable<Cliente>{
 
     @Override
     public boolean equals(Object obj) {
-        return super.equals(obj); //To change body of generated methods, choose Tools | Templates.
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        
+        Cliente cliente = (Cliente) obj;
+        return this.getCodigo() != null ?  codigo.equals(cliente.getCodigo()) : cliente.getCodigo() == null;
     }
     
     @Override

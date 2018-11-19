@@ -1,7 +1,8 @@
 package venda.visao;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
+import java.math.MathContext;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.TreeSet;
@@ -14,11 +15,15 @@ import venda.controlador.ClienteDao;
 import venda.controlador.ClienteDaoImpl;
 import venda.controlador.EstoqueDao;
 import venda.controlador.EstoqueDaoImpl;
+import venda.controlador.PagamentoDao;
+import venda.controlador.PagamentoDaoImpl;
 import venda.controlador.VendaDao;
 import venda.controlador.VendaDaoImpl;
 import venda.modelo.Cliente;
+import venda.modelo.Endereco;
 import venda.modelo.Estoque;
 import venda.modelo.ItemVenda;
+import venda.modelo.Pagamento;
 import venda.modelo.Venda;
 import venda.utilitario.QuantidadeException;
 
@@ -26,17 +31,21 @@ public class VendaTela extends javax.swing.JInternalFrame {
 
     private final ClienteDao clienteDao = new ClienteDaoImpl();
     private final EstoqueDao estoqueDao = new EstoqueDaoImpl();
+    private final PagamentoDao pagamentoDao = new PagamentoDaoImpl();
     private final VendaDao vendaDao = new VendaDaoImpl();
     private List<Estoque> estoques;
     private TreeSet<Cliente> clientes;
     private final ItemVendaDataTable itemVendaDataTable;
     private final Venda venda;
-    
-    public VendaTela(Venda venda) {
+    private TableModel table;
+
+    public VendaTela(Venda venda, TableModel table) {
         initComponents();
         this.venda = venda;
+        this.table = table;
         itemVendaDataTable = new ItemVendaDataTable(venda);
         inicialiazarComponentes();
+        atualizarSubtotal();
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -136,7 +145,6 @@ public class VendaTela extends javax.swing.JInternalFrame {
         jbFormasPamento.add(jrVista);
         jrVista.setText("A vista");
 
-        jcParcelada.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1", "2", "3", "4" }));
         jcParcelada.setToolTipText("Quantidade de parcelas");
 
         jLabel2.setText("Pagamento");
@@ -157,10 +165,14 @@ public class VendaTela extends javax.swing.JInternalFrame {
         jLabel3.setText("Cliente");
 
         jbAdicionarCliente.setText("Adicionar Cliente");
+        jbAdicionarCliente.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbAdicionarClienteActionPerformed(evt);
+            }
+        });
 
         jButton3.setText("Estornar");
 
-        jcMixte.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1", "2", "3", "4" }));
         jcMixte.setToolTipText("Quantidade de parcelas");
 
         jLabel4.setText("Status");
@@ -237,17 +249,15 @@ public class VendaTela extends javax.swing.JInternalFrame {
                             .addComponent(jcProdutos, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(6, 6, 6)
                         .addComponent(jtQuantidadeProduto, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addComponent(jtAdicionarItem)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel6)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jtSubTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(67, 67, 67))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(284, 284, 284)
-                                .addComponent(jLabel5)))
+                        .addGap(6, 6, 6)
+                        .addComponent(jtAdicionarItem)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel6)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jtSubTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel5)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jtTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -266,7 +276,7 @@ public class VendaTela extends javax.swing.JInternalFrame {
                     .addComponent(jtSubTotal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel5)
                     .addComponent(jtTotal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 22, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 25, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jrVista)
                     .addComponent(jLabel2))
@@ -324,29 +334,71 @@ public class VendaTela extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_jtAdicionarItemActionPerformed
 
     private void jcClientesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcClientesActionPerformed
-         verificarQuantidadeParcelas((Cliente) jcClientes.getSelectedItem());
+        verificarQuantidadeParcelas((Cliente) jcClientes.getSelectedItem());
     }//GEN-LAST:event_jcClientesActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        carregarDadosPara(venda);
-        vendaDao.atualizar(venda);
+        if (carregarDadosPara(venda)) {
+            vendaDao.atualizar(venda);
+            criarPagamentos();
+            dispose();
+        }
+
     }//GEN-LAST:event_jButton1ActionPerformed
 
-    private void inicializarJCProdutos(){
+    private void jbAdicionarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbAdicionarClienteActionPerformed
+
+        String nome = JOptionPane.showInputDialog(this, "Nome cliente");
+        String rg = JOptionPane.showInputDialog(this, "Número de RG");
+        String rua = JOptionPane.showInputDialog(this, "Rua");
+        String bairro = JOptionPane.showInputDialog(this, "Bairro");
+        String estado = JOptionPane.showInputDialog(this, "Estado com 2 digitos");
+        boolean fidelidade = false;
+
+        if (JOptionPane.showConfirmDialog(this, "Plano de fidelidade?", "WARNING",
+                JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+            fidelidade = true;
+        }
+
+        Cliente cliente = new Cliente();
+        cliente.setNome(nome);
+        cliente.setRg(rg);
+        cliente.setPlanoDeFidelidade(fidelidade);
+        Endereco endereco = new Endereco();
+        endereco.setRua(rua);
+        endereco.setBairro(bairro);
+        endereco.setEstado(estado);
+        cliente.setEndereco(endereco);
+
+        new ClienteDaoImpl().criar(cliente);
+        jcClientes.addItem(cliente);
+        jcClientes.setSelectedItem(cliente);
+    }//GEN-LAST:event_jbAdicionarClienteActionPerformed
+
+    private void inicializarJCProdutos() {
         Iterator<Estoque> iterator = estoques.iterator();
         while (iterator.hasNext()) {
             jcProdutos.addItem(iterator.next().toString());
         }
     }
-    
-    private void inicializarJCClientes(){
+
+    @Override
+    public void dispose() {
+        if (itemVendaDataTable.getRowCount() == 0) {
+            vendaDao.deletar(venda);
+        }
+        table.fireTableDataChanged();
+        super.dispose();
+    }
+
+    private void inicializarJCClientes() {
         Iterator<Cliente> iterator = clientes.iterator();
         while (iterator.hasNext()) {
             jcClientes.addItem(iterator.next());
         }
         verificarClienteVenda();
     }
-    
+
     private void inicializarListas() {
         estoques = estoqueDao.disponiveis();
         clientes = new TreeSet<>(clienteDao.todos());
@@ -377,8 +429,8 @@ public class VendaTela extends javax.swing.JInternalFrame {
     private javax.swing.JButton jbAdicionarCliente;
     private javax.swing.ButtonGroup jbFormasPamento;
     private javax.swing.JComboBox<Cliente> jcClientes;
-    private javax.swing.JComboBox<String> jcMixte;
-    private javax.swing.JComboBox<String> jcParcelada;
+    private javax.swing.JComboBox<Integer> jcMixte;
+    private javax.swing.JComboBox<Integer> jcParcelada;
     private javax.swing.JComboBox<String> jcProdutos;
     private javax.swing.JRadioButton jrMixte;
     private javax.swing.JRadioButton jrParcelado;
@@ -393,14 +445,14 @@ public class VendaTela extends javax.swing.JInternalFrame {
     // End of variables declaration//GEN-END:variables
 
     private void verificarTipoVenda() {
-        switch(venda.getTipo()){
-            case Venda.A_VISTA :
+        switch (venda.getTipo()) {
+            case Venda.A_VISTA:
                 jrVista.setSelected(true);
                 break;
-            case Venda.MIXTER :
+            case Venda.MIXTER:
                 jrMixte.setSelected(true);
                 break;
-            case Venda.PARCELADA :
+            case Venda.PARCELADA:
                 jrParcelado.setSelected(true);
                 break;
         }
@@ -408,19 +460,26 @@ public class VendaTela extends javax.swing.JInternalFrame {
 
     private void verificarClienteVenda() {
         jcClientes.setSelectedItem(venda.getCliente());
-        
         verificarQuantidadeParcelas((Cliente) jcClientes.getSelectedItem());
     }
 
     private void atualizarSubtotal() {
-        jtSubTotal.setText(itemVendaDataTable.subTotal().toString());
+        BigDecimal subtotal = BigDecimal.valueOf(itemVendaDataTable.subTotal());
+        subtotal.setScale(2);
+        jtSubTotal.setText(subtotal.toString());
+        jtTotal.setText(subtotal.toString());
+
+        if (venda.getCliente().isPlanoDeFidelidade()) {
+            subtotal = subtotal.multiply(BigDecimal.valueOf(0.9));
+            jtTotal.setText(subtotal.toString());
+        }
     }
-    
-    private void verificarStatusVenda(){
+
+    private void verificarStatusVenda() {
         jtStatus.setText(venda.verificarStatus().toString());
     }
-    
-    private void inicialiazarComponentes(){
+
+    private void inicialiazarComponentes() {
         verificarStatusVenda();
         inicializarListas();
         jtItensVenda.setModel(itemVendaDataTable);
@@ -432,43 +491,98 @@ public class VendaTela extends javax.swing.JInternalFrame {
     private void verificarQuantidadeParcelas(Cliente cliente) {
         jcParcelada.removeAllItems();
         jcMixte.removeAllItems();
-        
-        opcoesPadroes(jcParcelada);
-        opcoesPadroes(jcMixte);
-        
-        if(cliente.isPlanoDeFidelidade()){
-            jcMixte.addItem("5");
-            jcMixte.addItem("6");
-            jcParcelada.addItem("5");
-            jcParcelada.addItem("6");
+
+        opcoesPadroesPara(jcParcelada);
+        opcoesPadroesPara(jcMixte);
+
+        if (cliente.isPlanoDeFidelidade()) {
+            jcMixte.addItem(5);
+            jcMixte.addItem(6);
+            jcParcelada.addItem(5);
+            jcParcelada.addItem(6);
         }
     }
 
-    private void opcoesPadroes(JComboBox<String> jc) {
-        jc.addItem("1");
-        jc.addItem("2");
-        jc.addItem("3");
-        jc.addItem("4");
+    private void opcoesPadroesPara(JComboBox<Integer> jc) {
+        jc.addItem(1);
+        jc.addItem(2);
+        jc.addItem(3);
+        jc.addItem(4);
     }
 
-    private void carregarDadosPara(Venda venda) {
+    private boolean carregarDadosPara(Venda venda) {
         venda.setCliente((Cliente) jcClientes.getSelectedItem());
         venda.setStatus(Venda.Status.FINALIZADO.toInt());
-        if(validarFormaDePagamento(
-                jbFormasPamento.getSelection().getActionCommand())){
-        
+        if (!validarFormaDePagamento(
+                jbFormasPamento.getSelection().getActionCommand())) {
+            JOptionPane.showMessageDialog(this, "Verifique o valor de entrada!");
+            return false;
         }
+        return true;
     }
-    
-    private boolean validarFormaDePagamento(String command){
-        if(command.equals("mixter")){
-            try{
-                BigDecimal valor = new BigDecimal(jtEntradaMixter.getText());
-            } catch(Exception e){
+
+    private boolean validarFormaDePagamento(String command) {
+        if (command.equals("mixter")) {
+            try {
+                BigDecimal entrada = new BigDecimal(jtEntradaMixter.getText());
+                BigDecimal total = new BigDecimal(jtTotal.getText());
+            } catch (Exception e) {
                 return false;
             }
         }
         return true;
     }
-    
+
+    private void criarPagamentos() {
+        switch (jbFormasPamento.getSelection().getActionCommand()) {
+            case "vista":
+                pagamentoVista();
+                break;
+
+            case "mixter":
+                pagamentoMixter();
+                break;
+            case "parcelado":
+                pagamentoParcelado();
+                break;
+
+        }
+    }
+
+    public void pagamentoVista() {
+        Pagamento pagamento = new Pagamento();
+        pagamento.setVenda(venda);
+        BigDecimal total = new BigDecimal(jtTotal.getText());
+        pagamento.setValor(total);
+        pagamento.setDataPagamento(new Date());
+        pagamentoDao.criar(pagamento);
+    }
+
+    public void pagamentoMixter() {
+        Pagamento pagamento = new Pagamento();
+        pagamento.setVenda(venda);
+        pagamento.setDataPagamento(new Date());
+        
+        BigDecimal total = new BigDecimal(jtTotal.getText());
+        BigDecimal entrada = new BigDecimal(jtEntradaMixter.getText());
+        total = total.subtract(entrada);
+        
+        System.out.println(total);
+        pagamento.setValor(entrada);
+        
+        pagamentoDao.criar(pagamento);
+        
+        total = total.divide(BigDecimal.valueOf((int) jcMixte.getSelectedItem()), MathContext.DECIMAL32);
+        System.out.println(total + "2");
+        pagamentoDao.criarParcelas(venda, total, (int) jcMixte.getSelectedItem());
+    }
+
+    public void pagamentoParcelado() {
+        Pagamento pagamento = new Pagamento();
+        pagamento.setVenda(venda);
+        BigDecimal total = new BigDecimal(jtTotal.getText());
+        pagamentoDao.criarParcelas(venda,
+                total.divide(BigDecimal.valueOf((int) jcParcelada.getSelectedItem()), MathContext.DECIMAL32),
+                (int) jcParcelada.getSelectedItem());
+    }
 }

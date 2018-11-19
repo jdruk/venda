@@ -98,7 +98,7 @@ public class VendaPrincipal extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        VendaTela vendaNova = new VendaTela(VendaDaoImpl.getVendaInstancePadrao());
+        VendaTela vendaNova = new VendaTela(VendaDaoImpl.getVendaInstancePadrao(), vendaDataTable);
         this.getDesktopPane().add(vendaNova);
         vendaNova.setVisible(true);
     }//GEN-LAST:event_jButton1ActionPerformed
@@ -119,9 +119,15 @@ public class VendaPrincipal extends javax.swing.JInternalFrame {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         if (jtVenda.getSelectedRow() != -1) {
-            VendaTela vendaAlterar = new VendaTela(vendaDataTable.pegarVenda(jtVenda.getSelectedRow()));
-            this.getDesktopPane().add(vendaAlterar);
-            vendaAlterar.setVisible(true);
+            Venda venda = vendaDataTable.pegarVenda(jtVenda.getSelectedRow());
+            if (venda.getStatus() == Venda.Status.ABERTO.toInt()) {
+                VendaTela vendaAlterar = new VendaTela(venda, vendaDataTable);
+                this.getDesktopPane().add(vendaAlterar);
+                vendaAlterar.setVisible(true);
+            } else {
+                JOptionPane.showMessageDialog(this, "Venda \nfinalizada \npaga ou \nestornada não pode ser alterada!");
+            }
+
         }
     }//GEN-LAST:event_jButton2ActionPerformed
 

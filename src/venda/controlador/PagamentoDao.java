@@ -1,8 +1,9 @@
 package venda.controlador;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
-import venda.modelo.Cliente;
 import venda.modelo.Pagamento;
+import venda.modelo.Venda;
 
 public interface PagamentoDao {
     
@@ -12,7 +13,11 @@ public interface PagamentoDao {
 
     void atualizar(Pagamento pagamento);
 
-    Pagamento buscar(Pagamento pagamento);
+    Pagamento buscar(int pagamento);
 
-    ArrayList<Pagamento> todas(Cliente cliente);
+    ArrayList<Pagamento> todas(Venda cliente);
+    
+    void deletarTodos(Venda venda);
+    
+    void criarParcelas(Venda venda, BigDecimal valor, int quantidade );
 }
