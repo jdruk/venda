@@ -23,7 +23,6 @@ public class PagamentoDaoImpl extends UtilDaoImpl implements PagamentoDao {
             stmt.setDate(3, new java.sql.Date(pagamento.getDataPagamento().getTime()));
             stmt.setBoolean(4, pagamento.isPago());
             stmt.execute();
-            stmt.close();
             FabricaConexao.fecharConexao();
         } catch (SQLException ex) {
             Logger.getLogger(EnderecoDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
@@ -70,7 +69,7 @@ public class PagamentoDaoImpl extends UtilDaoImpl implements PagamentoDao {
             if (rs.next()) {
                 pagamento = carregarPagamento(rs);
             }
-            FabricaConexao.fecharConexao();
+            //FabricaConexao.fecharConexao();
         } catch (SQLException ex) {
             Logger.getLogger(EnderecoDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -79,16 +78,18 @@ public class PagamentoDaoImpl extends UtilDaoImpl implements PagamentoDao {
 
     @Override
     public ArrayList<Pagamento> todas(Venda venda) {
+        System.out.println(venda);
+        
         ArrayList<Pagamento> pagamentos = new ArrayList<>();
         try {
             Connection conexao = FabricaConexao.conectar();
-            PreparedStatement stmt = conexao.prepareStatement("select * from pagamento venda_id = ?");
+            PreparedStatement stmt = conexao.prepareStatement("select * from pagamento where venda_id = ?");
             stmt.setInt(1, venda.getCodigo());
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
                 pagamentos.add(carregarPagamento(rs));
             }
-            FabricaConexao.fecharConexao();
+            //FabricaConexao.fecharConexao();
         } catch (SQLException ex) {
             Logger.getLogger(PagamentoDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -102,6 +103,7 @@ public class PagamentoDaoImpl extends UtilDaoImpl implements PagamentoDao {
             pagamento.setCodigo(rs.getInt("codigo"));
             pagamento.setDataPagamento(rs.getTimestamp("data_pagamento"));
             pagamento.setVenda(new VendaDaoImpl().buscar(rs.getInt("venda_id")));
+            pagamento.setValor(rs.getBigDecimal("valor"));
             pagamento.setPago(rs.getBoolean("pago"));
         } catch (SQLException ex) {
             Logger.getLogger(PagamentoDaoImpl.class.getName()).log(Level.SEVERE, null, ex);

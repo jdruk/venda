@@ -57,5 +57,9 @@ public class ItemVendaDataTable extends TableModel {
         }
         return subtotal;
     }
+    
+    public ItemVenda pegarItemVenda(int linha){
+        return itens.get(linha);
+    }
 
 }

@@ -197,4 +197,7 @@ public class Venda {
 
     }
 
+    public String toString(){
+        return codigo + " data:" + data;
+    }
 }

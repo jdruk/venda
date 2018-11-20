@@ -1,7 +1,5 @@
 package venda.visao;
 
-import venda.modelo.Cliente;
-import venda.modelo.Endereco;
 import venda.modelo.Estoque;
 import venda.modelo.Produto;
 
