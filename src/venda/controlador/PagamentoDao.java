@@ -20,4 +20,6 @@ public interface PagamentoDao {
     void deletarTodos(Venda venda);
     
     void criarParcelas(Venda venda, BigDecimal valor, int quantidade );
+    
+    void finalizar(Venda venda);
 }

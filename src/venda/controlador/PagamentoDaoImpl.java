@@ -79,7 +79,7 @@ public class PagamentoDaoImpl extends UtilDaoImpl implements PagamentoDao {
     @Override
     public ArrayList<Pagamento> todas(Venda venda) {
         System.out.println(venda);
-        
+
         ArrayList<Pagamento> pagamentos = new ArrayList<>();
         try {
             Connection conexao = FabricaConexao.conectar();
@@ -134,6 +134,26 @@ public class PagamentoDaoImpl extends UtilDaoImpl implements PagamentoDao {
             Date date = java.sql.Date.valueOf(LocalDate.now().plusMonths(i));
             pagamento.setDataPagamento(date);
             criar(pagamento);
+        }
+    }
+
+    @Override
+    public void finalizar(Venda venda) {
+        try {
+            Connection conexao = FabricaConexao.conectar();
+            String query = "select count(*) from pagamento where venda_id = ? and pago = ?";
+            PreparedStatement stmt = conexao.prepareStatement(query);
+            stmt.setInt(1, venda.getCodigo());
+            stmt.setBoolean(2, false);
+            ResultSet rs = stmt.executeQuery();
+
+            FabricaConexao.fecharConexao();
+            if (!rs.next()) {
+                venda.setStatus(Venda.Status.PAGO.toInt());
+                new VendaDaoImpl().atualizar(venda);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(VendaDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

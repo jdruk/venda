@@ -39,6 +39,7 @@ public class PagamentoDataTable extends TableModel{
     public void pagar(int linha){
         pagamentos.get(linha).setPago(true);
         pagamentoDao.atualizar(pagamentos.get(linha));
+        pagamentoDao.finalizar(venda);
         this.fireTableDataChanged();
     }
     
