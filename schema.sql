@@ -55,3 +55,9 @@ create table pagamento(
     pago boolean default false,
     foreign key (venda_id) references venda(codigo) on delete cascade
 )
+
+create table funcionario(
+    codigo integer identity primary key,
+    nome varchar(100),
+    quantidadefaltas integer default 0
+)

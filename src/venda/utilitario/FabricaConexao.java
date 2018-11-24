@@ -14,7 +14,7 @@ public class FabricaConexao {
 
     private static final String USUARIO = "SA";
     private static final String SENHA = "";
-    private static final String URL = "jdbc:hsqldb:file:/home/josafams/v1/;shutdown=true;hsqldb.write_delay=false;sql.syntax‌​_ora=true;";
+    private static final String URL = "jdbc:hsqldb:file:/home/josafams/v2;shutdown=true;hsqldb.write_delay=false;sql.syntax‌​_ora=true;";
 
     public static Connection conectar() {
         if (conexao == null) {
